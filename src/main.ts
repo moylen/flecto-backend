@@ -3,9 +3,15 @@ import { AppModule } from './app.module';
 import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 
 async function bootstrap() {
-    const app = await NestFactory.create<NestFastifyApplication>(AppModule, new FastifyAdapter());
+    const app = await NestFactory.create<NestFastifyApplication>(AppModule, new FastifyAdapter(), {
+        logger: ['fatal', 'error', 'warn', 'debug'],
+    });
+
+    // Config
+    const configService = app.get(ConfigService);
 
     // Middlewares
     app.setGlobalPrefix('api');
@@ -17,7 +23,7 @@ async function bootstrap() {
     SwaggerModule.setup('api/docs', app, documentFactory);
 
     // Run
-    await app.listen(process.env.PORT ?? 3000);
+    await app.listen(configService.get<number>('APPLICATION_PORT') || 3000);
 }
 
-bootstrap();
+bootstrap().then();
