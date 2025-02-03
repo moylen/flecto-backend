@@ -1,14 +1,14 @@
-import { IsNotEmpty, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { IsNotEmpty, IsString } from 'class-validator';
 
-export class UserSaveDto {
+export class UserPasswordUpdateDto {
     @ApiProperty()
     @IsNotEmpty()
     @IsString()
-    username: string;
+    oldPassword: string;
 
     @ApiProperty()
     @IsNotEmpty()
     @IsString()
-    passwordHash: string;
+    newPassword: string;
 }

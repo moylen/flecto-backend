@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, Post, Req, Res } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Post, Req, Res, UseInterceptors } from '@nestjs/common';
 import { AuthService } from '../../domain/services/auth.service';
 import { RegisterDto } from '../../domain/dtos/register.dto';
 import { ApiBody, ApiOkResponse, ApiTags } from '@nestjs/swagger';
@@ -6,8 +6,10 @@ import { LoginDto } from '../../domain/dtos/login.dto';
 import { FastifyRequest, FastifyReply } from 'fastify';
 import { AccessTokenSchema } from '../../domain/dtos/access-token.schema';
 import { addYears } from 'date-fns';
+import { MappingInterceptor } from '../../../common/domain/interceptors/mapping.interceptor';
 
 @ApiTags('Auth')
+@UseInterceptors(new MappingInterceptor(AccessTokenSchema))
 @Controller('auth')
 export class AuthController {
     constructor(private readonly authService: AuthService) {}
@@ -37,7 +39,7 @@ export class AuthController {
 
     @ApiOkResponse({ type: AccessTokenSchema })
     @Post('refresh')
-    async refresh(@Req() req: FastifyRequest) {
+    async refresh(@Req() req: FastifyRequest): Promise<AccessTokenSchema> {
         if (!req.cookies.refreshToken) {
             throw new BadRequestException('Refresh token not found');
         }

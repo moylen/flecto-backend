@@ -1,0 +1,31 @@
+import { Body, Controller, Get, Param, ParseIntPipe, Post, UseGuards, UseInterceptors } from '@nestjs/common';
+import { UserService } from '../../domain/services/user.service';
+import { UserPasswordUpdateDto } from '../../domain/dtos/user-password-update.dto';
+import { ApiBody, ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { JwtAuthGuard } from '../../../auth/infrastructure/guards/jwt-auth.guard';
+import { UserSchema } from '../../domain/dtos/user.schema';
+import { Context } from '../../../auth/infrastructure/decorators/context.decorator';
+import { ContextDto } from '../../../common/domain/dtos/context.dto';
+import { MappingInterceptor } from '../../../common/domain/interceptors/mapping.interceptor';
+
+@UseGuards(JwtAuthGuard)
+@ApiTags('User')
+@Controller('user')
+export class UserController {
+    constructor(private readonly userService: UserService) {}
+
+    @ApiBody({ type: UserPasswordUpdateDto })
+    @ApiOkResponse({ type: UserSchema })
+    @UseInterceptors(new MappingInterceptor(UserSchema))
+    @Post('update-password')
+    async updatePassword(@Body() dto: UserPasswordUpdateDto, @Context() context: ContextDto) {
+        return this.userService.updatePassword(dto, context);
+    }
+
+    @ApiOkResponse({ type: UserSchema })
+    @UseInterceptors(new MappingInterceptor(UserSchema))
+    @Get(':id')
+    async findById(@Param('id', ParseIntPipe) id: number) {
+        return this.userService.findByIdOrPanic(id);
+    }
+}

@@ -38,10 +38,7 @@ export class AuthService {
             throw new BadRequestException('User with this username already exists');
         }
 
-        const user = await this.userService.create({
-            username: dto.username,
-            passwordHash: await this.hashService.hashPassword(dto.password),
-        });
+        const user = await this.userService.create(dto.username, await this.hashService.hashPassword(dto.password));
 
         const [accessToken, refreshToken] = await this.getTokens(user);
 
