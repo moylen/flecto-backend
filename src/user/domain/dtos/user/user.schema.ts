@@ -31,10 +31,7 @@ export class UserSchema {
     @Expose()
     description: string;
 
-    @ApiProperty({
-        type: () => [UserContactSchema],
-        isArray: true,
-    })
+    @ApiProperty({ type: () => [UserContactSchema] })
     @Type(() => UserContactSchema)
     @Expose()
     userContacts: UserContactSchema[];
