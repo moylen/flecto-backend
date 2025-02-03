@@ -1,44 +1,53 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Expose } from 'class-transformer';
+import { Expose, Type } from 'class-transformer';
+import { UserContactSchema } from '../user-contact/user-contact.schema';
 
 export class UserSchema {
-    @Expose()
     @ApiProperty()
+    @Expose()
     id: number;
 
-    @Expose()
     @ApiProperty()
+    @Expose()
     username: string;
 
-    @Expose()
     @ApiProperty()
+    @Expose()
     email: string;
 
-    @Expose()
     @ApiProperty()
+    @Expose()
     role: string;
 
-    @Expose()
     @ApiProperty()
+    @Expose()
     name: string;
 
-    @Expose()
     @ApiProperty()
+    @Expose()
     surname: string;
 
-    @Expose()
     @ApiProperty()
+    @Expose()
     description: string;
 
+    @ApiProperty({
+        type: [UserContactSchema],
+        isArray: true,
+    })
+    @Type(() => UserContactSchema)
     @Expose()
+    userContacts: UserContactSchema[];
+
     @ApiProperty()
+    @Expose()
     createTime: Date;
 
-    @Expose()
     @ApiProperty()
+    @Expose()
     updateTime: Date;
 
-    @Expose()
     @ApiProperty()
+    @Expose()
     deleteTime: Date;
 }

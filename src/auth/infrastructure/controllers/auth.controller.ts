@@ -18,11 +18,8 @@ export class AuthController {
 
     @ApiBody({ type: RegisterDto })
     @ApiOkResponse({ type: AccessTokenSchema })
-    @Post('register')
-    async register(
-        @Res({ passthrough: true }) res: FastifyReply,
-        @Body() dto: RegisterDto,
-    ): Promise<AccessTokenSchema> {
+    @Post('/register')
+    async register(@Res({ passthrough: true }) res: FastifyReply, @Body() dto: RegisterDto) {
         const [accessToken, refreshToken] = await this.authService.register(dto);
         res.setCookie('refreshToken', refreshToken, { httpOnly: true, expires: this.COOKIE_EXPIRES_DATE });
         return { accessToken };
@@ -30,16 +27,16 @@ export class AuthController {
 
     @ApiBody({ type: LoginDto })
     @ApiOkResponse({ type: AccessTokenSchema })
-    @Post('login')
-    async login(@Res({ passthrough: true }) res: FastifyReply, @Body() dto: LoginDto): Promise<AccessTokenSchema> {
+    @Post('/login')
+    async login(@Res({ passthrough: true }) res: FastifyReply, @Body() dto: LoginDto) {
         const [accessToken, refreshToken] = await this.authService.login(dto);
         res.setCookie('refreshToken', refreshToken, { httpOnly: true, expires: this.COOKIE_EXPIRES_DATE });
         return { accessToken };
     }
 
     @ApiOkResponse({ type: AccessTokenSchema })
-    @Post('refresh')
-    async refresh(@Req() req: FastifyRequest): Promise<AccessTokenSchema> {
+    @Post('/refresh')
+    async refresh(@Req() req: FastifyRequest) {
         if (!req.cookies.refreshToken) {
             throw new BadRequestException('Refresh token not found');
         }

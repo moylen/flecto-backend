@@ -1,9 +1,10 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../../database/infrastructure/service/prisma.service';
-import { User } from '@prisma/client';
-import { UserPasswordUpdateDto } from '../dtos/user-password-update.dto';
+import { UserPasswordUpdateDto } from '../dtos/user/user-password-update.dto';
 import { HashService } from '../../../common/domain/services/hash.service';
 import { ContextDto } from '../../../common/domain/dtos/context.dto';
+import { UserSaveDto } from '../dtos/user/user-save.dto';
+import { UserUsernameUpdateDto } from '../dtos/user/user-username-update.dto';
 
 @Injectable()
 export class UserService {
@@ -12,7 +13,7 @@ export class UserService {
         private readonly hashService: HashService,
     ) {}
 
-    async findByUsername(username: string): Promise<User> {
+    async findByUsername(username: string) {
         return this.prisma.user.findUnique({
             where: {
                 username,
@@ -20,10 +21,14 @@ export class UserService {
         });
     }
 
-    async findByIdOrPanic(id: number): Promise<User> {
+    async findByIdOrPanic(id: number) {
         const user = await this.prisma.user.findUnique({
+            include: {
+                userContacts: true,
+            },
             where: {
                 id,
+                deleteTime: null,
             },
         });
 
@@ -34,7 +39,7 @@ export class UserService {
         return user;
     }
 
-    async updatePassword(dto: UserPasswordUpdateDto, context: ContextDto): Promise<User> {
+    async updatePassword(dto: UserPasswordUpdateDto, context: ContextDto) {
         const user = await this.findByIdOrPanic(context.user.id);
 
         const isVerified = await this.hashService.verify(user.passwordHash, dto.oldPassword);
@@ -53,7 +58,47 @@ export class UserService {
         });
     }
 
-    async create(username: string, passwordHash: string): Promise<User> {
+    async updateUsername(dto: UserUsernameUpdateDto, context: ContextDto) {
+        const duplicate = await this.findByUsername(dto.newUsername);
+
+        if (duplicate) {
+            throw new BadRequestException('User with this username already exists');
+        }
+
+        return this.prisma.user.update({
+            where: {
+                id: context.user.id,
+            },
+            data: {
+                username: dto.newUsername,
+            },
+        });
+    }
+
+    async update(dto: UserSaveDto, context: ContextDto) {
+        return this.prisma.user.update({
+            include: {
+                userContacts: true,
+            },
+            where: {
+                id: context.user.id,
+            },
+            data: {
+                ...dto,
+                userContacts: {
+                    upsert: dto.userContacts?.map((contact) => ({
+                        where: {
+                            id: contact.id || 0,
+                        },
+                        create: contact,
+                        update: contact,
+                    })),
+                },
+            },
+        });
+    }
+
+    async create(username: string, passwordHash: string) {
         return this.prisma.user.create({ data: { username, passwordHash } });
     }
 }

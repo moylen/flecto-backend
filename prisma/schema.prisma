@@ -13,21 +13,21 @@ enum UserRole {
 }
 
 model User {
-  id               Int                @id @default(autoincrement())
-  username         String             @unique
-  email            String?            @unique
-  passwordHash     String
-  role             UserRole           @default(user)
-  name             String?
-  surname          String?
-  description      String?
+  id                Int                @id @default(autoincrement())
+  username          String             @unique
+  email             String?            @unique
+  passwordHash      String
+  role              UserRole           @default(user)
+  name              String?
+  surname           String?
+  description       String?
   // avatar ref to file
-  createTime       DateTime           @default(now())
-  updateTime       DateTime           @updatedAt
-  deleteTime       DateTime?
-  UserToken        UserToken[]
-  UserEmailConfirm UserEmailConfirm[]
-  UserContact      UserContact[]
+  createTime        DateTime           @default(now())
+  updateTime        DateTime           @updatedAt
+  deleteTime        DateTime?
+  userTokens        UserToken[]
+  userContacts      UserContact[]
+  userEmailConfirms UserEmailConfirm[]
 
   @@map("user")
 }

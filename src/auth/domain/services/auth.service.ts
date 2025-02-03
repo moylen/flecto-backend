@@ -2,14 +2,13 @@ import { BadRequestException, Injectable, NotFoundException } from '@nestjs/comm
 import { UserService } from '../../../user/domain/services/user.service';
 import { HashService } from '../../../common/domain/services/hash.service';
 import { RegisterDto } from '../dtos/register.dto';
-import { User } from '@prisma/client';
 import { LoginDto } from '../dtos/login.dto';
 import { JwtService, JwtSignOptions } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { UserTokenService } from '../../../user/domain/services/user-token.service';
 import { addMilliseconds } from 'date-fns';
-import { AccessTokenSchema } from '../dtos/access-token.schema';
 import ms from 'ms';
+import { User } from '@prisma/client';
 
 @Injectable()
 export class AuthService {
@@ -63,7 +62,7 @@ export class AuthService {
         return [accessToken, refreshToken];
     }
 
-    async refresh(refreshToken: string): Promise<AccessTokenSchema> {
+    async refresh(refreshToken: string): Promise<{ accessToken: string }> {
         const userToken = await this.userTokenService.findByRefreshToken(refreshToken);
 
         if (!userToken) {
@@ -75,7 +74,7 @@ export class AuthService {
         return { accessToken };
     }
 
-    private async getTokens(user: User) {
+    private async getTokens(user: User): Promise<string[]> {
         const [accessToken, refreshToken] = await Promise.all([
             this.signToken(user, this.ACCESS_OPTIONS),
             this.signToken(user, this.REFRESH_OPTIONS),
