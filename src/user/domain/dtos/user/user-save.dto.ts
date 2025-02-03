@@ -20,7 +20,7 @@ export class UserSaveDto {
     description?: string;
 
     @ApiProperty({
-        type: [UserContactSaveDto],
+        type: () => [UserContactSaveDto],
         isArray: true,
     })
     @IsOptional()

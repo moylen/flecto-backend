@@ -32,7 +32,7 @@ export class UserSchema {
     description: string;
 
     @ApiProperty({
-        type: [UserContactSchema],
+        type: () => [UserContactSchema],
         isArray: true,
     })
     @Type(() => UserContactSchema)
