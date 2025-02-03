@@ -5,7 +5,6 @@ import { ApiBody, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { LoginDto } from '../../domain/dtos/login.dto';
 import { FastifyRequest, FastifyReply } from 'fastify';
 import { AccessTokenSchema } from '../../domain/dtos/access-token.schema';
-import { addYears } from 'date-fns';
 import { MappingInterceptor } from '../../../common/domain/interceptors/mapping.interceptor';
 
 @ApiTags('Auth')
@@ -14,14 +13,15 @@ import { MappingInterceptor } from '../../../common/domain/interceptors/mapping.
 export class AuthController {
     constructor(private readonly authService: AuthService) {}
 
-    private readonly COOKIE_EXPIRES_DATE = addYears(new Date(), 10);
-
     @ApiBody({ type: RegisterDto })
     @ApiOkResponse({ type: AccessTokenSchema })
     @Post('/register')
     async register(@Res({ passthrough: true }) res: FastifyReply, @Body() dto: RegisterDto) {
         const [accessToken, refreshToken] = await this.authService.register(dto);
-        res.setCookie('refreshToken', refreshToken, { httpOnly: true, expires: this.COOKIE_EXPIRES_DATE });
+        res.setCookie('refreshToken', refreshToken, {
+            httpOnly: true,
+            expires: this.authService.getRefreshTokenExpireTime(),
+        });
         return { accessToken };
     }
 
@@ -30,7 +30,10 @@ export class AuthController {
     @Post('/login')
     async login(@Res({ passthrough: true }) res: FastifyReply, @Body() dto: LoginDto) {
         const [accessToken, refreshToken] = await this.authService.login(dto);
-        res.setCookie('refreshToken', refreshToken, { httpOnly: true, expires: this.COOKIE_EXPIRES_DATE });
+        res.setCookie('refreshToken', refreshToken, {
+            httpOnly: true,
+            expires: this.authService.getRefreshTokenExpireTime(),
+        });
         return { accessToken };
     }
 

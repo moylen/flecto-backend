@@ -74,17 +74,17 @@ export class AuthService {
         return { accessToken };
     }
 
+    getRefreshTokenExpireTime(): Date {
+        return addMilliseconds(new Date(), ms(this.configService.get<ms.StringValue>('REFRESH_TOKEN_EXP')));
+    }
+
     private async getTokens(user: User): Promise<string[]> {
         const [accessToken, refreshToken] = await Promise.all([
             this.signToken(user, this.ACCESS_OPTIONS),
             this.signToken(user, this.REFRESH_OPTIONS),
         ]);
 
-        await this.userTokenService.create(
-            user.id,
-            refreshToken,
-            addMilliseconds(new Date(), ms(this.configService.get<ms.StringValue>('REFRESH_TOKEN_EXP'))),
-        );
+        await this.userTokenService.create(user.id, refreshToken, this.getRefreshTokenExpireTime());
 
         return [accessToken, refreshToken];
     }
