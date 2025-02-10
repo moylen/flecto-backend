@@ -22,7 +22,7 @@ async function bootstrap() {
 
     // Middlewares
     app.setGlobalPrefix('api');
-    app.useGlobalPipes(new ValidationPipe({ transform: true }));
+    app.useGlobalPipes(new ValidationPipe({ transform: true, whitelist: true }));
     await app.register(fastifyCookie);
     app.use('/api/docs', apiReference({ withFastify: true, spec: { content: documentFactory } }));
 
