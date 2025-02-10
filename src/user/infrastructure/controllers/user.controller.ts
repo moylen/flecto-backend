@@ -8,7 +8,6 @@ import { Context } from '../../../auth/infrastructure/decorators/context.decorat
 import { ContextDto } from '../../../common/domain/dtos/context.dto';
 import { MappingInterceptor } from '../../../common/domain/interceptors/mapping.interceptor';
 import { UserSaveDto } from '../../domain/dtos/user/user-save.dto';
-import { UserUsernameUpdateDto } from '../../domain/dtos/user/user-username-update.dto';
 
 @ApiTags('User')
 @ApiBearerAuth()
@@ -20,17 +19,9 @@ export class UserController {
     @ApiBody({ type: UserPasswordUpdateDto })
     @ApiOkResponse({ type: UserSchema })
     @UseInterceptors(new MappingInterceptor(UserSchema))
-    @Patch('/update-password')
+    @Patch('/password')
     async updatePassword(@Body() dto: UserPasswordUpdateDto, @Context() context: ContextDto) {
         return this.userService.updatePassword(dto, context);
-    }
-
-    @ApiBody({ type: UserUsernameUpdateDto })
-    @ApiOkResponse({ type: UserSchema })
-    @UseInterceptors(new MappingInterceptor(UserSchema))
-    @Patch('/update-username')
-    async updateUsername(@Body() dto: UserUsernameUpdateDto, @Context() context: ContextDto) {
-        return this.userService.updateUsername(dto, context);
     }
 
     @ApiOkResponse({ type: UserSchema })

@@ -6,7 +6,7 @@ export class LoginDto {
     @ApiProperty()
     @IsNotEmpty()
     @IsString()
-    @Transform(({ value }) => value.toLowerCase())
+    @Transform(({ value }) => value.toLowerCase().trim())
     username: string;
 
     @ApiProperty()

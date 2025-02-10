@@ -31,12 +31,6 @@ export class AuthService {
     };
 
     async register(dto: RegisterDto): Promise<string[]> {
-        const duplicate = await this.userService.findByUsername(dto.username);
-
-        if (duplicate) {
-            throw new BadRequestException('User with this username already exists');
-        }
-
         const user = await this.userService.create(dto.username, await this.hashService.hashPassword(dto.password));
 
         const [accessToken, refreshToken] = await this.getTokens(user);
@@ -48,13 +42,13 @@ export class AuthService {
         const user = await this.userService.findByUsername(dto.username);
 
         if (!user) {
-            throw new NotFoundException('User with this username not found');
+            throw new NotFoundException('Username or password is incorrect');
         }
 
         const isPassed = await this.hashService.verify(user.passwordHash, dto.password);
 
         if (!isPassed) {
-            throw new BadRequestException('Username or password is wrong');
+            throw new NotFoundException('Username or password is incorrect');
         }
 
         const [accessToken, refreshToken] = await this.getTokens(user);
