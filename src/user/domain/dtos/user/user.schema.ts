@@ -31,11 +31,6 @@ export class UserSchema {
     @Expose()
     description: string;
 
-    @ApiProperty({ type: () => [UserContactSchema] })
-    @Type(() => UserContactSchema)
-    @Expose()
-    userContacts: UserContactSchema[];
-
     @ApiProperty()
     @Expose()
     createTime: Date;
@@ -47,4 +42,9 @@ export class UserSchema {
     @ApiProperty()
     @Expose()
     deleteTime: Date;
+
+    @ApiProperty({ type: () => [UserContactSchema] })
+    @Type(() => UserContactSchema)
+    @Expose()
+    userContacts: UserContactSchema[];
 }

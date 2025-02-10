@@ -16,14 +16,6 @@ import { UserSaveDto } from '../../domain/dtos/user/user-save.dto';
 export class UserController {
     constructor(private readonly userService: UserService) {}
 
-    @ApiBody({ type: UserPasswordUpdateDto })
-    @ApiOkResponse({ type: UserSchema })
-    @UseInterceptors(new MappingInterceptor(UserSchema))
-    @Patch('/password')
-    async updatePassword(@Body() dto: UserPasswordUpdateDto, @Context() context: ContextDto) {
-        return this.userService.updatePassword(dto, context);
-    }
-
     @ApiOkResponse({ type: UserSchema })
     @UseInterceptors(new MappingInterceptor(UserSchema))
     @Get('/:id')
@@ -36,5 +28,13 @@ export class UserController {
     @Put('/')
     async update(@Body() dto: UserSaveDto, @Context() context: ContextDto) {
         return this.userService.update(dto, context);
+    }
+
+    @ApiBody({ type: UserPasswordUpdateDto })
+    @ApiOkResponse({ type: UserSchema })
+    @UseInterceptors(new MappingInterceptor(UserSchema))
+    @Patch('/password')
+    async updatePassword(@Body() dto: UserPasswordUpdateDto, @Context() context: ContextDto) {
+        return this.userService.updatePassword(dto, context);
     }
 }

@@ -38,23 +38,8 @@ export class UserService {
         return user;
     }
 
-    async updatePassword(dto: UserPasswordUpdateDto, context: ContextDto) {
-        const user = await this.findByIdOrPanic(context.user.id);
-
-        const isVerified = await this.hashService.verify(user.passwordHash, dto.oldPassword);
-
-        if (!isVerified) {
-            throw new BadRequestException('Old password is wrong');
-        }
-
-        return this.prisma.user.update({
-            where: {
-                id: context.user.id,
-            },
-            data: {
-                passwordHash: await this.hashService.hashPassword(dto.newPassword),
-            },
-        });
+    async create(username: string, passwordHash: string) {
+        return this.prisma.user.create({ data: { username, passwordHash } });
     }
 
     async update(dto: UserSaveDto, context: ContextDto) {
@@ -80,7 +65,22 @@ export class UserService {
         });
     }
 
-    async create(username: string, passwordHash: string) {
-        return this.prisma.user.create({ data: { username, passwordHash } });
+    async updatePassword(dto: UserPasswordUpdateDto, context: ContextDto) {
+        const user = await this.findByIdOrPanic(context.user.id);
+
+        const isVerified = await this.hashService.verify(user.passwordHash, dto.oldPassword);
+
+        if (!isVerified) {
+            throw new BadRequestException('Old password is wrong');
+        }
+
+        return this.prisma.user.update({
+            where: {
+                id: context.user.id,
+            },
+            data: {
+                passwordHash: await this.hashService.hashPassword(dto.newPassword),
+            },
+        });
     }
 }
