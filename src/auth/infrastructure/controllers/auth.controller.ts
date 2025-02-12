@@ -9,7 +9,7 @@ import { MappingInterceptor } from '../../../common/domain/interceptors/mapping.
 
 @ApiTags('Auth')
 @UseInterceptors(new MappingInterceptor(AccessTokenSchema))
-@Controller('auth')
+@Controller('/auth')
 export class AuthController {
     constructor(private readonly authService: AuthService) {}
 

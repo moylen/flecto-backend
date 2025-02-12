@@ -12,6 +12,18 @@ enum UserRole {
   admin
 }
 
+model File {
+  id         Int      @id @default(autoincrement())
+  filename   String
+  s3Key      String   @unique
+  bucketName String
+  size       Int
+  mimeType   String
+  createTime DateTime @default(now())
+
+  @@map("file")
+}
+
 model User {
   id                Int                @id @default(autoincrement())
   username          String             @unique

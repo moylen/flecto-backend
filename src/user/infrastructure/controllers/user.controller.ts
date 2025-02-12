@@ -12,7 +12,7 @@ import { UserSaveDto } from '../../domain/dtos/user/user-save.dto';
 @ApiTags('User')
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
-@Controller('user')
+@Controller('/user')
 export class UserController {
     constructor(private readonly userService: UserService) {}
 

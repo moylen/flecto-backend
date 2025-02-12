@@ -7,6 +7,7 @@ import { ConfigService } from '@nestjs/config';
 import fastifyCookie from '@fastify/cookie';
 import { apiReference } from '@scalar/nestjs-api-reference';
 import { useContainer } from 'class-validator';
+import { fastifyMultipart } from '@fastify/multipart';
 
 async function bootstrap() {
     const app = await NestFactory.create<NestFastifyApplication>(AppModule, new FastifyAdapter(), {
@@ -25,6 +26,7 @@ async function bootstrap() {
     app.setGlobalPrefix('api');
     app.useGlobalPipes(new ValidationPipe({ transform: true, whitelist: true }));
     await app.register(fastifyCookie);
+    await app.register(fastifyMultipart);
     app.use('/api/docs', apiReference({ withFastify: true, spec: { content: documentFactory } }));
     useContainer(app.select(AppModule), { fallbackOnErrors: true });
 
