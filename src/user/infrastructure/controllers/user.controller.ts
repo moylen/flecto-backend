@@ -30,7 +30,6 @@ export class UserController {
         return this.userService.update(dto, context);
     }
 
-    @ApiBody({ type: UserPasswordUpdateDto })
     @ApiOkResponse({ type: UserSchema })
     @UseInterceptors(new MappingInterceptor(UserSchema))
     @Patch('/password')
