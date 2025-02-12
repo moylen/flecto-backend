@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Param, ParseIntPipe, Patch, Put, UseGuards, UseInterceptors } from '@nestjs/common';
 import { UserService } from '../../domain/services/user.service';
 import { UserPasswordUpdateDto } from '../../domain/dtos/user/user-password-update.dto';
-import { ApiBearerAuth, ApiBody, ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../../../auth/infrastructure/guards/jwt-auth.guard';
 import { UserSchema } from '../../domain/dtos/user/user.schema';
 import { Context } from '../../../auth/infrastructure/decorators/context.decorator';

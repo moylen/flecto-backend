@@ -1,4 +1,4 @@
-import { Controller, Post, Req, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Controller, Get, Param, ParseIntPipe, Post, Req, UseGuards, UseInterceptors } from '@nestjs/common';
 import { FileService } from '../../domain/services/file.service';
 import { FastifyRequest } from 'fastify';
 import { MappingInterceptor } from '../../../common/domain/interceptors/mapping.interceptor';
@@ -14,6 +14,21 @@ import { FilesSaveDto } from '../../domain/dto/files.save.dto';
 @Controller('/file')
 export class FileController {
     constructor(private readonly fileService: FileService) {}
+
+    @ApiOkResponse({
+        content: {
+            'application/octet-stream': {
+                schema: {
+                    type: 'string',
+                    format: 'binary',
+                },
+            },
+        },
+    })
+    @Get('/:id')
+    async getStreamById(@Param('id', ParseIntPipe) id: number) {
+        return this.fileService.getStreamByIdOrPanic(id);
+    }
 
     @ApiOkResponse({ type: FileSchema })
     @ApiConsumes('multipart/form-data')
