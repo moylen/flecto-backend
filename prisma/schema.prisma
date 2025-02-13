@@ -20,6 +20,7 @@ model File {
   size       Int
   mimeType   String
   createTime DateTime @default(now())
+  User       User?
 
   @@map("file")
 }
@@ -33,10 +34,11 @@ model User {
   name              String?
   surname           String?
   description       String?
-  // avatar ref to file
+  avatarId          Int?               @unique
   createTime        DateTime           @default(now())
   updateTime        DateTime           @updatedAt
   deleteTime        DateTime?
+  avatar            File?              @relation(fields: [avatarId], references: [id])
   userTokens        UserToken[]
   userContacts      UserContact[]
   userEmailConfirms UserEmailConfirm[]

@@ -83,4 +83,18 @@ export class UserService {
             },
         });
     }
+
+    async updateAvatar(avatarId: number, context: ContextDto) {
+        return this.prisma.user.update({
+            include: {
+                userContacts: true,
+            },
+            where: {
+                id: context.user.id,
+            },
+            data: {
+                avatarId,
+            },
+        });
+    }
 }

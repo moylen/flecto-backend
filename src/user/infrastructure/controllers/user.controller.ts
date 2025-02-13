@@ -36,4 +36,11 @@ export class UserController {
     async updatePassword(@Body() dto: UserPasswordUpdateDto, @Context() context: ContextDto) {
         return this.userService.updatePassword(dto, context);
     }
+
+    @ApiOkResponse({ type: UserSchema })
+    @UseInterceptors(new MappingInterceptor(UserSchema))
+    @Patch('/avatar/:id')
+    async updateAvatar(@Param('id', ParseIntPipe) id: number, @Context() context: ContextDto) {
+        return this.userService.updateAvatar(id, context);
+    }
 }

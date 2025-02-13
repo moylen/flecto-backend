@@ -33,6 +33,10 @@ export class UserSchema {
 
     @ApiProperty()
     @Expose()
+    avatarId: number;
+
+    @ApiProperty()
+    @Expose()
     createTime: Date;
 
     @ApiProperty()
