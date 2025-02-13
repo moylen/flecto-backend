@@ -7,19 +7,15 @@ export class ArticleViewService {
     constructor(private readonly prismaService: PrismaService) {}
 
     async create(articleId: number, context: ContextDto): Promise<void> {
-        const view = await this.prismaService.articleView.findFirst({
+        await this.prismaService.articleView.upsert({
             where: {
-                articleId,
-                userId: context.user.id,
+                userId_articleId: {
+                    articleId,
+                    userId: context.user.id,
+                },
             },
-        });
-
-        if (view) {
-            return;
-        }
-
-        await this.prismaService.articleView.create({
-            data: {
+            update: {},
+            create: {
                 articleId,
                 userId: context.user.id,
                 createTime: new Date(),
