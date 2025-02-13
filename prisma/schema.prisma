@@ -42,6 +42,7 @@ model User {
   userTokens        UserToken[]
   userContacts      UserContact[]
   userEmailConfirms UserEmailConfirm[]
+  articles          Article[]
 
   @@map("user")
 }
@@ -80,4 +81,36 @@ model UserEmailConfirm {
   user       User     @relation(fields: [userId], references: [id])
 
   @@map("user_email_confirm")
+}
+
+model Article {
+  id          Int       @id @default(autoincrement())
+  title       String
+  slug        String    @unique
+  description String
+  creatorId   Int
+  createTime  DateTime  @default(now())
+  updateTime  DateTime  @updatedAt
+  deleteTime  DateTime?
+  creator     User      @relation(fields: [creatorId], references: [id])
+
+  @@map("article")
+}
+
+model ArticleLike {
+  userId     Int
+  articleId  Int
+  createTime DateTime @default(now())
+
+  @@id([userId, articleId])
+  @@map("article_like")
+}
+
+model ArticleView {
+  userId     Int
+  articleId  Int
+  createTime DateTime @default(now())
+
+  @@id([userId, articleId])
+  @@map("article_view")
 }

@@ -3,11 +3,12 @@ import { UserService } from '../../domain/services/user.service';
 import { UserPasswordUpdateDto } from '../../domain/dtos/user/user-password-update.dto';
 import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../../../auth/infrastructure/guards/jwt-auth.guard';
-import { UserSchema } from '../../domain/dtos/user/user.schema';
 import { Context } from '../../../auth/infrastructure/decorators/context.decorator';
 import { ContextDto } from '../../../common/domain/dtos/context.dto';
 import { MappingInterceptor } from '../../../common/domain/interceptors/mapping.interceptor';
 import { UserSaveDto } from '../../domain/dtos/user/user-save.dto';
+import { UserDetailSchema } from '../../domain/dtos/user/user-detail.schema';
+import { UserSchema } from '../../domain/dtos/user/user.schema';
 
 @ApiTags('User')
 @ApiBearerAuth()
@@ -16,8 +17,8 @@ import { UserSaveDto } from '../../domain/dtos/user/user-save.dto';
 export class UserController {
     constructor(private readonly userService: UserService) {}
 
-    @ApiOkResponse({ type: UserSchema })
-    @UseInterceptors(new MappingInterceptor(UserSchema))
+    @ApiOkResponse({ type: UserDetailSchema })
+    @UseInterceptors(new MappingInterceptor(UserDetailSchema))
     @Get('/:id')
     async findById(@Param('id', ParseIntPipe) id: number) {
         return this.userService.findByIdOrPanic(id);

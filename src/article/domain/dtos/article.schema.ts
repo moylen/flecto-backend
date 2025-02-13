@@ -1,38 +1,34 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Expose } from 'class-transformer';
 
-export class UserSchema {
+export class ArticleSchema {
     @ApiProperty()
     @Expose()
     id: number;
 
     @ApiProperty()
     @Expose()
-    username: string;
+    title: string;
 
     @ApiProperty()
     @Expose()
-    email: string;
-
-    @ApiProperty()
-    @Expose()
-    role: string;
-
-    @ApiProperty()
-    @Expose()
-    name: string;
-
-    @ApiProperty()
-    @Expose()
-    surname: string;
+    slug: string;
 
     @ApiProperty()
     @Expose()
     description: string;
 
-    @ApiProperty()
-    @Expose()
-    avatarId: number;
+    // @ApiProperty()
+    // @Expose()
+    // isLiked: boolean;
+    //
+    // @ApiProperty()
+    // @Expose()
+    // likesCount: number;
+    //
+    // @ApiProperty()
+    // @Expose()
+    // viewsCount: number;
 
     @ApiProperty()
     @Expose()

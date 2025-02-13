@@ -4,8 +4,16 @@ import { AuthModule } from './auth/infrastructure/auth.module';
 import { UserModule } from './user/infrastructure/user.module';
 import { DatabaseModule } from './database/infrastructure/database.module';
 import { FileModule } from './file/infrastructure/file.module';
+import { ArticleModule } from './article/infrastucture/article.module';
 
 @Module({
-    imports: [ConfigModule.forRoot({ isGlobal: true }), AuthModule, UserModule, DatabaseModule, FileModule],
+    imports: [
+        ConfigModule.forRoot({ isGlobal: true }),
+        AuthModule,
+        UserModule,
+        DatabaseModule,
+        FileModule,
+        ArticleModule,
+    ],
 })
 export class AppModule {}

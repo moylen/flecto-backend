@@ -44,9 +44,6 @@ export class UserService {
 
     async update(dto: UserSaveDto, context: ContextDto) {
         return this.prisma.user.update({
-            include: {
-                userContacts: true,
-            },
             where: {
                 id: context.user.id,
             },
@@ -86,9 +83,6 @@ export class UserService {
 
     async updateAvatar(avatarId: number, context: ContextDto) {
         return this.prisma.user.update({
-            include: {
-                userContacts: true,
-            },
             where: {
                 id: context.user.id,
             },
