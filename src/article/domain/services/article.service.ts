@@ -35,6 +35,12 @@ export class ArticleService {
         const article = await this.prismaService.article.findUnique({
             include: {
                 creator: true,
+                _count: {
+                    select: {
+                        articleLikes: true,
+                        articleViews: true,
+                    },
+                },
             },
             where: {
                 slug,
@@ -46,18 +52,16 @@ export class ArticleService {
             throw new NotFoundException('Article not found');
         }
 
-        const [like, likesCount, viewsCount] = await Promise.all([
+        const [like] = await Promise.all([
             this.articleLikeService.findByArticleIdAndUserId(article.id, context.user.id),
-            this.articleLikeService.count(article.id, context),
-            this.articleViewService.count(article.id, context),
             this.articleViewService.create(article.id, context),
         ]);
 
         return {
             ...article,
             isLiked: !!like,
-            likesCount,
-            viewsCount,
+            likesCount: article._count.articleLikes,
+            viewsCount: article._count.articleViews,
         };
     }
 

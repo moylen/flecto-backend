@@ -17,15 +17,6 @@ export class ArticleLikeService {
         });
     }
 
-    async count(articleId: number, context: ContextDto): Promise<number> {
-        return this.prismaService.articleLike.count({
-            where: {
-                articleId,
-                userId: context.user.id,
-            },
-        });
-    }
-
     async toggleLike(articleId: number, context: ContextDto): Promise<void> {
         await this.prismaService.$transaction(async (tx) => {
             const like = await this.findByArticleIdAndUserId(articleId, context.user.id, tx);
