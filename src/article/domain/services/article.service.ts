@@ -5,10 +5,16 @@ import { SearchDto } from '../../../common/domain/dtos/search.dto';
 import { PrismaService } from '../../../database/infrastructure/service/prisma.service';
 import { SlugHelper } from '../../../common/domain/helpers/slug.helper';
 import { RepositoryHelper } from '../../../common/domain/helpers/repository.helper';
+import { ArticleLikeService } from './article-like.service';
+import { ArticleViewService } from './article-view.service';
 
 @Injectable()
 export class ArticleService {
-    constructor(private readonly prismaService: PrismaService) {}
+    constructor(
+        private readonly prismaService: PrismaService,
+        private readonly articleLikeService: ArticleLikeService,
+        private readonly articleViewService: ArticleViewService,
+    ) {}
 
     async findByIdOrPanic(id: number) {
         const article = await this.prismaService.article.findUnique({
@@ -25,7 +31,7 @@ export class ArticleService {
         return article;
     }
 
-    async findBySlugOrPanic(slug: string) {
+    async findBySlugOrPanic(slug: string, context: ContextDto) {
         const article = await this.prismaService.article.findUnique({
             include: {
                 creator: true,
@@ -40,7 +46,19 @@ export class ArticleService {
             throw new NotFoundException('Article not found');
         }
 
-        return article;
+        const [like, likesCount, viewsCount] = await Promise.all([
+            this.articleLikeService.findByArticleIdAndUserId(article.id, context.user.id),
+            this.articleLikeService.count(article.id, context),
+            this.articleViewService.count(article.id, context),
+            this.articleViewService.create(article.id, context),
+        ]);
+
+        return {
+            ...article,
+            isLiked: !!like,
+            likesCount,
+            viewsCount,
+        };
     }
 
     async findAll(dto: SearchDto) {

@@ -8,12 +8,12 @@ import { UserSaveDto } from '../dtos/user/user-save.dto';
 @Injectable()
 export class UserService {
     constructor(
-        private readonly prisma: PrismaService,
+        private readonly prismaService: PrismaService,
         private readonly hashService: HashService,
     ) {}
 
     async findByUsername(username: string) {
-        return this.prisma.user.findUnique({
+        return this.prismaService.user.findUnique({
             where: {
                 username,
             },
@@ -21,7 +21,7 @@ export class UserService {
     }
 
     async findByIdOrPanic(id: number) {
-        const user = await this.prisma.user.findUnique({
+        const user = await this.prismaService.user.findUnique({
             include: {
                 userContacts: true,
             },
@@ -39,11 +39,11 @@ export class UserService {
     }
 
     async create(username: string, passwordHash: string) {
-        return this.prisma.user.create({ data: { username, passwordHash } });
+        return this.prismaService.user.create({ data: { username, passwordHash } });
     }
 
     async update(dto: UserSaveDto, context: ContextDto) {
-        return this.prisma.user.update({
+        return this.prismaService.user.update({
             where: {
                 id: context.user.id,
             },
@@ -71,7 +71,7 @@ export class UserService {
             throw new BadRequestException('Old password is wrong');
         }
 
-        return this.prisma.user.update({
+        return this.prismaService.user.update({
             where: {
                 id: context.user.id,
             },
@@ -82,7 +82,7 @@ export class UserService {
     }
 
     async updateAvatar(avatarId: number, context: ContextDto) {
-        return this.prisma.user.update({
+        return this.prismaService.user.update({
             where: {
                 id: context.user.id,
             },

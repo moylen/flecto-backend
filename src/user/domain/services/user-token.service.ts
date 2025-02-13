@@ -3,10 +3,10 @@ import { PrismaService } from '../../../database/infrastructure/service/prisma.s
 
 @Injectable()
 export class UserTokenService {
-    constructor(private readonly prisma: PrismaService) {}
+    constructor(private readonly prismaService: PrismaService) {}
 
     async findByRefreshToken(refreshToken: string) {
-        return this.prisma.userToken.findFirst({
+        return this.prismaService.userToken.findFirst({
             include: {
                 user: true,
             },
@@ -22,7 +22,7 @@ export class UserTokenService {
     }
 
     async create(userId: number, refreshToken: string, expireTime: Date) {
-        return this.prisma.userToken.create({
+        return this.prismaService.userToken.create({
             data: {
                 userId,
                 refreshToken,

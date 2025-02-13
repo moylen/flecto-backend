@@ -20,19 +20,23 @@ import { JwtAuthGuard } from '../../../auth/infrastructure/guards/jwt-auth.guard
 import { MappingInterceptor } from '../../../common/domain/interceptors/mapping.interceptor';
 import { ArticleSchema } from '../../domain/dtos/article.schema';
 import { ArticleDetailSchema } from '../../domain/dtos/article-detail.schema';
+import { ArticleLikeService } from '../../domain/services/article-like.service';
 
 @ApiTags('Article')
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
 @Controller('/article')
 export class ArticleController {
-    constructor(private readonly articleService: ArticleService) {}
+    constructor(
+        private readonly articleService: ArticleService,
+        private readonly articleLikeService: ArticleLikeService,
+    ) {}
 
     @ApiOkResponse({ type: ArticleDetailSchema })
     @UseInterceptors(new MappingInterceptor(ArticleDetailSchema))
     @Get('/:slug')
-    async findBySlug(@Param('slug') slug: string) {
-        return this.articleService.findBySlugOrPanic(slug);
+    async findBySlug(@Param('slug') slug: string, @Context() context: ContextDto) {
+        return this.articleService.findBySlugOrPanic(slug, context);
     }
 
     @ApiOkResponse({ type: ArticleSchema })
@@ -54,6 +58,11 @@ export class ArticleController {
     @Put('/:id')
     async update(@Param('id', ParseIntPipe) id: number, @Body() dto: ArticleSaveDto, @Context() context: ContextDto) {
         return this.articleService.update(id, dto, context);
+    }
+
+    @Put('/:id/like')
+    async toggleLike(@Param('id', ParseIntPipe) id: number, @Context() context: ContextDto) {
+        return this.articleLikeService.toggleLike(id, context);
     }
 
     @ApiOkResponse({ type: ArticleSchema })

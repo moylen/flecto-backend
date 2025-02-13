@@ -18,17 +18,17 @@ export class ArticleSchema {
     @Expose()
     description: string;
 
-    // @ApiProperty()
-    // @Expose()
-    // isLiked: boolean;
-    //
-    // @ApiProperty()
-    // @Expose()
-    // likesCount: number;
-    //
-    // @ApiProperty()
-    // @Expose()
-    // viewsCount: number;
+    @ApiProperty()
+    @Expose()
+    isLiked: boolean;
+
+    @ApiProperty()
+    @Expose()
+    likesCount: number;
+
+    @ApiProperty()
+    @Expose()
+    viewsCount: number;
 
     @ApiProperty()
     @Expose()
