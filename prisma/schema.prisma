@@ -20,29 +20,33 @@ model File {
   size       Int
   mimeType   String
   createTime DateTime @default(now())
-  User       User?
+
+  user User?
 
   @@map("file")
 }
 
 model User {
-  id                Int                @id @default(autoincrement())
-  username          String             @unique
-  email             String?            @unique
-  passwordHash      String
-  role              UserRole           @default(user)
-  name              String?
-  surname           String?
-  description       String?
-  avatarId          Int?               @unique
-  createTime        DateTime           @default(now())
-  updateTime        DateTime           @updatedAt
-  deleteTime        DateTime?
+  id           Int       @id @default(autoincrement())
+  username     String    @unique
+  email        String?   @unique
+  passwordHash String
+  role         UserRole  @default(user)
+  name         String?
+  surname      String?
+  description  String?
+  avatarId     Int?      @unique
+  createTime   DateTime  @default(now())
+  updateTime   DateTime  @updatedAt
+  deleteTime   DateTime?
+
   avatar            File?              @relation(fields: [avatarId], references: [id])
   userTokens        UserToken[]
   userContacts      UserContact[]
   userEmailConfirms UserEmailConfirm[]
   articles          Article[]
+  articleLikes      ArticleLike[]
+  articleViews      ArticleView[]
 
   @@map("user")
 }
@@ -54,7 +58,8 @@ model UserContact {
   link       String
   createTime DateTime @default(now())
   updateTime DateTime @updatedAt
-  user       User     @relation(fields: [userId], references: [id])
+
+  user User @relation(fields: [userId], references: [id])
 
   @@map("user_contact")
 }
@@ -78,7 +83,8 @@ model UserEmailConfirm {
   isActive   Boolean  @default(true)
   expireTime DateTime
   createTime DateTime @default(now())
-  user       User     @relation(fields: [userId], references: [id])
+
+  user User @relation(fields: [userId], references: [id])
 
   @@map("user_email_confirm")
 }
@@ -92,7 +98,10 @@ model Article {
   createTime  DateTime  @default(now())
   updateTime  DateTime  @updatedAt
   deleteTime  DateTime?
-  creator     User      @relation(fields: [creatorId], references: [id])
+
+  creator      User          @relation(fields: [creatorId], references: [id])
+  articleLikes ArticleLike[]
+  articleViews ArticleView[]
 
   @@map("article")
 }
@@ -102,6 +111,9 @@ model ArticleLike {
   articleId  Int
   createTime DateTime @default(now())
 
+  user    User    @relation(fields: [userId], references: [id])
+  article Article @relation(fields: [articleId], references: [id])
+
   @@id([userId, articleId])
   @@map("article_like")
 }
@@ -110,6 +122,9 @@ model ArticleView {
   userId     Int
   articleId  Int
   createTime DateTime @default(now())
+
+  user    User    @relation(fields: [userId], references: [id])
+  article Article @relation(fields: [articleId], references: [id])
 
   @@id([userId, articleId])
   @@map("article_view")
