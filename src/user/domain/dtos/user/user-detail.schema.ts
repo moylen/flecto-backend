@@ -7,5 +7,5 @@ export class UserDetailSchema extends UserSchema {
     @ApiProperty({ type: () => [UserContactSchema] })
     @Type(() => UserContactSchema)
     @Expose()
-    userContacts: UserContactSchema[];
+    contacts: UserContactSchema[];
 }

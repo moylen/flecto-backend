@@ -35,15 +35,15 @@ export class ArticleService {
         const article = await this.prismaService.article.findUnique({
             include: {
                 creator: true,
-                articleTags: {
+                tags: {
                     select: {
                         tag: true,
                     },
                 },
                 _count: {
                     select: {
-                        articleLikes: true,
-                        articleViews: true,
+                        likes: true,
+                        views: true,
                     },
                 },
             },
@@ -65,15 +65,15 @@ export class ArticleService {
         return {
             ...article,
             isLiked: !!like,
-            likesCount: article._count.articleLikes,
-            viewsCount: article._count.articleViews,
+            likesCount: article._count.likes,
+            viewsCount: article._count.views,
         };
     }
 
     async findAll(dto: SearchDto) {
         return this.prismaService.article.findMany({
             include: {
-                articleTags: {
+                tags: {
                     select: {
                         tag: true,
                     },
@@ -93,7 +93,7 @@ export class ArticleService {
     async create(dto: ArticleSaveDto, context: ContextDto) {
         return this.prismaService.article.create({
             include: {
-                articleTags: {
+                tags: {
                     select: {
                         tag: true,
                     },
@@ -103,8 +103,8 @@ export class ArticleService {
                 ...dto,
                 slug: SlugHelper.getSlug(dto.title),
                 creatorId: context.user.id,
-                articleTags: {
-                    create: dto.articleTags?.map((tag) => ({
+                tags: {
+                    create: dto.tags?.map((tag) => ({
                         tag: {
                             connectOrCreate: {
                                 where: {
@@ -128,7 +128,7 @@ export class ArticleService {
 
         return this.prismaService.article.update({
             include: {
-                articleTags: {
+                tags: {
                     select: {
                         tag: true,
                     },
@@ -139,9 +139,9 @@ export class ArticleService {
             },
             data: {
                 ...dto,
-                articleTags: {
+                tags: {
                     deleteMany: {},
-                    create: dto.articleTags?.map((tag) => ({
+                    create: dto.tags?.map((tag) => ({
                         tag: {
                             connectOrCreate: {
                                 where: {

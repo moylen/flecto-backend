@@ -40,13 +40,13 @@ model User {
   updateTime   DateTime  @updatedAt
   deleteTime   DateTime?
 
-  avatar            File?              @relation(fields: [avatarId], references: [id])
-  userTokens        UserToken[]
-  userContacts      UserContact[]
-  userEmailConfirms UserEmailConfirm[]
-  articles          Article[]
-  articleLikes      ArticleLike[]
-  articleViews      ArticleView[]
+  avatar        File?              @relation(fields: [avatarId], references: [id])
+  tokens        UserToken[]
+  contacts      UserContact[]
+  emailConfirms UserEmailConfirm[]
+  articles      Article[]
+  articleLikes  ArticleLike[]
+  articleViews  ArticleView[]
 
   @@map("user")
 }
@@ -66,11 +66,12 @@ model UserContact {
 
 model UserToken {
   id           Int      @id @default(autoincrement())
-  user         User     @relation(fields: [userId], references: [id])
   userId       Int
   refreshToken String   @unique
   expireTime   DateTime
   createTime   DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
 
   @@map("user_token")
 }
@@ -99,10 +100,10 @@ model Article {
   updateTime  DateTime  @updatedAt
   deleteTime  DateTime?
 
-  creator      User          @relation(fields: [creatorId], references: [id])
-  articleLikes ArticleLike[]
-  articleViews ArticleView[]
-  articleTags  ArticleTag[]
+  creator User          @relation(fields: [creatorId], references: [id])
+  likes   ArticleLike[]
+  views   ArticleView[]
+  tags    ArticleTag[]
 
   @@map("article")
 }
@@ -135,7 +136,7 @@ model Tag {
   id    Int    @id @default(autoincrement())
   title String @unique
 
-  articleTags ArticleTag[]
+  articles ArticleTag[]
 
   @@map("tag")
 }

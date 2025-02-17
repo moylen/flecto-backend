@@ -19,5 +19,5 @@ export class ArticleSaveDto {
     @Type(() => TagSaveDto)
     @IsArray()
     @ValidateNested({ each: true })
-    articleTags?: TagSaveDto[];
+    tags?: TagSaveDto[];
 }

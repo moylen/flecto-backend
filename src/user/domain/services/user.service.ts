@@ -24,7 +24,7 @@ export class UserService {
     async findByIdOrPanic(id: number) {
         const user = await this.prismaService.user.findUnique({
             include: {
-                userContacts: true,
+                contacts: true,
             },
             where: {
                 id,
@@ -50,13 +50,13 @@ export class UserService {
             },
             data: {
                 ...dto,
-                userContacts: {
+                contacts: {
                     deleteMany: {
                         id: {
-                            notIn: dto.userContacts?.map((contact) => contact.id).filter(Boolean),
+                            notIn: dto.contacts?.map((contact) => contact.id).filter(Boolean),
                         },
                     },
-                    upsert: dto.userContacts?.map((contact) => ({
+                    upsert: dto.contacts?.map((contact) => ({
                         where: {
                             id: contact.id || 0,
                         },

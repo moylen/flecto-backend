@@ -45,7 +45,7 @@ export class ArticleSchema {
 
     @ApiProperty({ type: () => [TagSchema] })
     @Type(() => TagSchema)
-    @Transform(({ obj }) => obj.articleTags?.map((item: any) => item.tag))
+    @Transform(({ obj }) => obj.tags?.map((item: any) => item.tag))
     @Expose()
-    articleTags: TagSchema[];
+    tags: TagSchema[];
 }

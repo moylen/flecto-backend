@@ -29,5 +29,5 @@ export class UserSaveDto {
     @Type(() => UserContactSaveDto)
     @IsArray()
     @ValidateNested({ each: true })
-    userContacts?: UserContactSaveDto[];
+    contacts?: UserContactSaveDto[];
 }
