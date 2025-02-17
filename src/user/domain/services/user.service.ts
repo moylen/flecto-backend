@@ -50,6 +50,11 @@ export class UserService {
             data: {
                 ...dto,
                 userContacts: {
+                    deleteMany: {
+                        id: {
+                            notIn: dto.userContacts?.map((contact) => contact.id).filter(Boolean),
+                        },
+                    },
                     upsert: dto.userContacts?.map((contact) => ({
                         where: {
                             id: contact.id || 0,
