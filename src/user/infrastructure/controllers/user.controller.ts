@@ -9,6 +9,7 @@ import { MappingInterceptor } from '../../../common/domain/interceptors/mapping.
 import { UserSaveDto } from '../../domain/dtos/user/user-save.dto';
 import { UserDetailSchema } from '../../domain/dtos/user/user-detail.schema';
 import { UserSchema } from '../../domain/dtos/user/user.schema';
+import { UserUsernameUpdateDto } from '../../domain/dtos/user/user-username-update.dto';
 
 @ApiTags('User')
 @ApiBearerAuth()
@@ -35,7 +36,14 @@ export class UserController {
     @UseInterceptors(new MappingInterceptor(UserSchema))
     @Patch('/password')
     async updatePassword(@Body() dto: UserPasswordUpdateDto, @Context() context: ContextDto) {
-        return this.userService.updatePassword(dto, context);
+        return this.userService.updatePasswordOrPanic(dto, context);
+    }
+
+    @ApiOkResponse({ type: UserSchema })
+    @UseInterceptors(new MappingInterceptor(UserSchema))
+    @Patch('/username')
+    async updateUsername(@Body() dto: UserUsernameUpdateDto, @Context() context: ContextDto) {
+        return this.userService.updateUsernameOrPanic(dto, context);
     }
 
     @ApiOkResponse({ type: UserSchema })

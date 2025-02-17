@@ -1,17 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsArray, IsNumber, IsOptional, IsString, Validate, ValidateNested } from 'class-validator';
+import { IsArray, IsNumber, IsOptional, IsString, ValidateNested } from 'class-validator';
 import { UserContactSaveDto } from '../user-contact/user-contact-save.dto';
-import { Transform, Type } from 'class-transformer';
-import { UsernameUniqueValidator } from '../../validators/username-unique.validator';
+import { Type } from 'class-transformer';
 
 export class UserSaveDto {
-    @ApiProperty({ required: false })
-    @IsOptional()
-    @IsString()
-    @Transform(({ value }) => value.toLowerCase().trim())
-    @Validate(UsernameUniqueValidator)
-    username?: string;
-
     @ApiProperty({ required: false })
     @IsOptional()
     @IsString()

@@ -4,6 +4,7 @@ import { UserPasswordUpdateDto } from '../dtos/user/user-password-update.dto';
 import { HashService } from '../../../common/domain/services/hash.service';
 import { ContextDto } from '../../../common/domain/dtos/context.dto';
 import { UserSaveDto } from '../dtos/user/user-save.dto';
+import { UserUsernameUpdateDto } from '../dtos/user/user-username-update.dto';
 
 @Injectable()
 export class UserService {
@@ -67,7 +68,7 @@ export class UserService {
         });
     }
 
-    async updatePassword(dto: UserPasswordUpdateDto, context: ContextDto) {
+    async updatePasswordOrPanic(dto: UserPasswordUpdateDto, context: ContextDto) {
         const user = await this.findByIdOrPanic(context.user.id);
 
         const isVerified = await this.hashService.verify(user.passwordHash, dto.oldPassword);
@@ -82,6 +83,17 @@ export class UserService {
             },
             data: {
                 passwordHash: await this.hashService.hashPassword(dto.newPassword),
+            },
+        });
+    }
+
+    async updateUsernameOrPanic(dto: UserUsernameUpdateDto, context: ContextDto) {
+        return this.prismaService.user.update({
+            where: {
+                id: context.user.id,
+            },
+            data: {
+                username: dto.username,
             },
         });
     }
