@@ -10,17 +10,17 @@ import {
     UseGuards,
     UseInterceptors,
 } from '@nestjs/common';
-import { ArticleService } from '../../domain/services/article.service';
+import { ArticleService } from '../../domain/services/article/article.service';
 import { SearchDto } from '../../../common/domain/dtos/search.dto';
-import { ArticleSaveDto } from '../../domain/dtos/article-save.dto';
+import { ArticleSaveDto } from '../../domain/dtos/article/article-save.dto';
 import { ContextDto } from '../../../common/domain/dtos/context.dto';
 import { Context } from '../../../auth/infrastructure/decorators/context.decorator';
 import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../../../auth/infrastructure/guards/jwt-auth.guard';
 import { MappingInterceptor } from '../../../common/domain/interceptors/mapping.interceptor';
-import { ArticleSchema } from '../../domain/dtos/article.schema';
-import { ArticleDetailSchema } from '../../domain/dtos/article-detail.schema';
-import { ArticleLikeService } from '../../domain/services/article-like.service';
+import { ArticleSchema } from '../../domain/dtos/article/article.schema';
+import { ArticleDetailSchema } from '../../domain/dtos/article/article-detail.schema';
+import { ArticleLikeService } from '../../domain/services/article/article-like.service';
 
 @ApiTags('Article')
 @ApiBearerAuth()

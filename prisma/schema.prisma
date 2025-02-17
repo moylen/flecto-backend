@@ -102,6 +102,7 @@ model Article {
   creator      User          @relation(fields: [creatorId], references: [id])
   articleLikes ArticleLike[]
   articleViews ArticleView[]
+  articleTags  ArticleTag[]
 
   @@map("article")
 }
@@ -128,4 +129,24 @@ model ArticleView {
 
   @@id([userId, articleId])
   @@map("article_view")
+}
+
+model Tag {
+  id    Int    @id @default(autoincrement())
+  title String @unique
+
+  articleTags ArticleTag[]
+
+  @@map("tag")
+}
+
+model ArticleTag {
+  articleId Int
+  tagId     Int
+
+  article Article @relation(fields: [articleId], references: [id])
+  tag     Tag     @relation(fields: [tagId], references: [id])
+
+  @@id([articleId, tagId])
+  @@map("article_tag")
 }

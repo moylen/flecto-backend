@@ -1,8 +1,7 @@
-import { PaginatorInterface } from '../interfaces/paginator.interface';
-import { PaginationInterface } from '../interfaces/PaginationInterface';
+import { SearchDto } from '../dtos/search.dto';
 
 export class RepositoryHelper {
-    static applyPagination(dto: PaginatorInterface): PaginationInterface {
+    static applyPagination<T extends SearchDto>(dto: T) {
         const { page = 0, pageSize = 25 } = dto;
         return {
             take: pageSize,

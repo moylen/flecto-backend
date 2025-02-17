@@ -1,10 +1,10 @@
 import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
-import { ArticleSaveDto } from '../dtos/article-save.dto';
-import { ContextDto } from '../../../common/domain/dtos/context.dto';
-import { SearchDto } from '../../../common/domain/dtos/search.dto';
-import { PrismaService } from '../../../database/infrastructure/service/prisma.service';
-import { SlugHelper } from '../../../common/domain/helpers/slug.helper';
-import { RepositoryHelper } from '../../../common/domain/helpers/repository.helper';
+import { ArticleSaveDto } from '../../dtos/article/article-save.dto';
+import { ContextDto } from '../../../../common/domain/dtos/context.dto';
+import { SearchDto } from '../../../../common/domain/dtos/search.dto';
+import { PrismaService } from '../../../../database/infrastructure/service/prisma.service';
+import { SlugHelper } from '../../../../common/domain/helpers/slug.helper';
+import { RepositoryHelper } from '../../../../common/domain/helpers/repository.helper';
 import { ArticleLikeService } from './article-like.service';
 import { ArticleViewService } from './article-view.service';
 
@@ -35,6 +35,11 @@ export class ArticleService {
         const article = await this.prismaService.article.findUnique({
             include: {
                 creator: true,
+                articleTags: {
+                    select: {
+                        tag: true,
+                    },
+                },
                 _count: {
                     select: {
                         articleLikes: true,
@@ -67,6 +72,13 @@ export class ArticleService {
 
     async findAll(dto: SearchDto) {
         return this.prismaService.article.findMany({
+            include: {
+                articleTags: {
+                    select: {
+                        tag: true,
+                    },
+                },
+            },
             where: {
                 title: {
                     contains: dto.query,
@@ -80,10 +92,29 @@ export class ArticleService {
 
     async create(dto: ArticleSaveDto, context: ContextDto) {
         return this.prismaService.article.create({
+            include: {
+                articleTags: {
+                    select: {
+                        tag: true,
+                    },
+                },
+            },
             data: {
                 ...dto,
                 slug: SlugHelper.getSlug(dto.title),
                 creatorId: context.user.id,
+                articleTags: {
+                    create: dto.articleTags?.map((tag) => ({
+                        tag: {
+                            connectOrCreate: {
+                                where: {
+                                    title: tag.title,
+                                },
+                                create: tag,
+                            },
+                        },
+                    })),
+                },
             },
         });
     }
@@ -96,11 +127,31 @@ export class ArticleService {
         }
 
         return this.prismaService.article.update({
+            include: {
+                articleTags: {
+                    select: {
+                        tag: true,
+                    },
+                },
+            },
             where: {
                 id,
             },
             data: {
                 ...dto,
+                articleTags: {
+                    deleteMany: {},
+                    create: dto.articleTags?.map((tag) => ({
+                        tag: {
+                            connectOrCreate: {
+                                where: {
+                                    title: tag.title,
+                                },
+                                create: tag,
+                            },
+                        },
+                    })),
+                },
             },
         });
     }

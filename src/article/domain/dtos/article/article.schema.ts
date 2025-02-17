@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Expose } from 'class-transformer';
+import { Expose, Transform, Type } from 'class-transformer';
+import { TagSchema } from '../tag/tag.schema';
 
 export class ArticleSchema {
     @ApiProperty()
@@ -41,4 +42,10 @@ export class ArticleSchema {
     @ApiProperty()
     @Expose()
     deleteTime: Date;
+
+    @ApiProperty({ type: () => [TagSchema] })
+    @Type(() => TagSchema)
+    @Transform(({ obj }) => obj.articleTags?.map((item: any) => item.tag))
+    @Expose()
+    articleTags: TagSchema[];
 }
