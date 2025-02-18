@@ -26,20 +26,20 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
     @SubscribeMessage('send-message')
     async send(@ConnectedSocket() socket: AuthSocket, @MessageBody() dto: ChatMessageSaveDto) {
-        await this.chatMessageService.create(socket.context.user.id, dto);
-        this.emitOrSkip('receive-message', dto);
+        const message = await this.chatMessageService.create(socket.context.user.id, dto);
+        this.emitOrSkip('receive-message', message);
     }
 
     @SubscribeMessage('edit-message')
     async edit(@ConnectedSocket() socket: AuthSocket, @MessageBody() dto: ChatMessageSaveDto) {
-        await this.chatMessageService.update(socket.context.user.id, dto);
-        this.emitOrSkip('receive-edit-message', dto);
+        const message = await this.chatMessageService.update(socket.context.user.id, dto);
+        this.emitOrSkip('receive-edit-message', message);
     }
 
     @SubscribeMessage('delete-message')
     async softDelete(@ConnectedSocket() socket: AuthSocket, @MessageBody() dto: ChatMessageSaveDto) {
-        await this.chatMessageService.softDelete(socket.context.user.id, dto);
-        this.emitOrSkip('receive-delete-message', dto);
+        const message = await this.chatMessageService.softDelete(socket.context.user.id, dto);
+        this.emitOrSkip('receive-delete-message', message);
     }
 
     // TODO: Method executing before guard, need to find another way to set user
