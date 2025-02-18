@@ -5,6 +5,7 @@ import { UserModule } from './user/infrastructure/user.module';
 import { DatabaseModule } from './database/infrastructure/database.module';
 import { FileModule } from './file/infrastructure/file.module';
 import { ArticleModule } from './article/infrastucture/article.module';
+import { ChatModule } from './chat/infrastructure/chat.module';
 
 @Module({
     imports: [
@@ -14,6 +15,7 @@ import { ArticleModule } from './article/infrastucture/article.module';
         DatabaseModule,
         FileModule,
         ArticleModule,
+        ChatModule,
     ],
 })
 export class AppModule {}

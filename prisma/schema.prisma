@@ -40,13 +40,15 @@ model User {
   updateTime   DateTime  @updatedAt
   deleteTime   DateTime?
 
-  avatar        File?              @relation(fields: [avatarId], references: [id])
-  tokens        UserToken[]
-  contacts      UserContact[]
-  emailConfirms UserEmailConfirm[]
-  articles      Article[]
-  articleLikes  ArticleLike[]
-  articleViews  ArticleView[]
+  avatar           File?              @relation(fields: [avatarId], references: [id])
+  tokens           UserToken[]
+  contacts         UserContact[]
+  emailConfirms    UserEmailConfirm[]
+  articles         Article[]
+  articleLikes     ArticleLike[]
+  articleViews     ArticleView[]
+  sendedMessages   ChatMessage[]      @relation("sender")
+  receivedMessages ChatMessage[]      @relation("receiver")
 
   @@map("user")
 }
@@ -150,4 +152,19 @@ model ArticleTag {
 
   @@id([articleId, tagId])
   @@map("article_tag")
+}
+
+model ChatMessage {
+  id         Int       @id @default(autoincrement())
+  senderId   Int
+  receiverId Int
+  content    String
+  createTime DateTime  @default(now())
+  updateTime DateTime  @updatedAt
+  deleteTime DateTime?
+
+  sender   User @relation("sender", fields: [senderId], references: [id])
+  receiver User @relation("receiver", fields: [receiverId], references: [id])
+
+  @@map("chat_message")
 }
