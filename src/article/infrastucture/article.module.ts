@@ -7,11 +7,13 @@ import { ArticleLikeService } from '../domain/services/article/article-like.serv
 import { ArticleViewService } from '../domain/services/article/article-view.service';
 import { TagService } from '../domain/services/tag/tag.service';
 import { TagController } from './controllers/tag.controller';
+import { ArticleCommentService } from '../domain/services/article/article-comment.service';
+import { ArticleCommentController } from './controllers/article-comment.controller';
 
 @Module({
     imports: [DatabaseModule, UserModule],
-    controllers: [ArticleController, TagController],
-    providers: [ArticleService, ArticleLikeService, ArticleViewService, TagService],
-    exports: [ArticleService, ArticleLikeService, ArticleViewService, TagService],
+    controllers: [ArticleController, ArticleCommentController, TagController],
+    providers: [ArticleService, ArticleLikeService, ArticleViewService, ArticleCommentService, TagService],
+    exports: [ArticleService, ArticleLikeService, ArticleViewService, ArticleCommentService, TagService],
 })
 export class ArticleModule {}

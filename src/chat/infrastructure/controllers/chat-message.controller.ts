@@ -8,7 +8,7 @@ import { JwtAuthGuard } from '../../../auth/infrastructure/guards/jwt-auth.guard
 import { ChatMessageSchema } from '../../domain/dtos/chat-message.schema';
 import { MappingInterceptor } from '../../../common/domain/interceptors/mapping.interceptor';
 
-@ApiTags('Chat-message')
+@ApiTags('Chat message')
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
 @Controller('/chat-message')

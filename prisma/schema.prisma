@@ -49,6 +49,7 @@ model User {
   articleViews     ArticleView[]
   sendedMessages   ChatMessage[]      @relation("sender")
   receivedMessages ChatMessage[]      @relation("receiver")
+  comments         ArticleComment[]
 
   @@map("user")
 }
@@ -102,10 +103,11 @@ model Article {
   updateTime  DateTime  @updatedAt
   deleteTime  DateTime?
 
-  creator User          @relation(fields: [creatorId], references: [id])
-  likes   ArticleLike[]
-  views   ArticleView[]
-  tags    ArticleTag[]
+  creator  User             @relation(fields: [creatorId], references: [id])
+  likes    ArticleLike[]
+  views    ArticleView[]
+  tags     ArticleTag[]
+  comments ArticleComment[]
 
   @@map("article")
 }
@@ -132,6 +134,21 @@ model ArticleView {
 
   @@id([userId, articleId])
   @@map("article_view")
+}
+
+model ArticleComment {
+  id         Int       @id @default(autoincrement())
+  creatorId  Int
+  articleId  Int
+  content    String
+  createTime DateTime  @default(now())
+  updateTime DateTime  @updatedAt
+  deleteTime DateTime?
+
+  creator User    @relation(fields: [creatorId], references: [id])
+  article Article @relation(fields: [articleId], references: [id])
+
+  @@map("article_comment")
 }
 
 model Tag {
