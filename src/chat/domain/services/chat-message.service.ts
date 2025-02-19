@@ -1,9 +1,11 @@
 import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../../database/infrastructure/service/prisma.service';
-import { ChatMessageSaveDto } from '../dtos/chat-message-save.dto';
 import { ChatMessageSearchDto } from '../dtos/chat-message-search.dto';
 import { RepositoryHelper } from '../../../common/domain/helpers/repository.helper';
 import { ContextDto } from '../../../common/domain/dtos/context.dto';
+import { ChatMessageCreateDto } from '../dtos/chat-message-create.dto';
+import { ChatMessageUpdateDto } from '../dtos/chat-message-update.dto';
+import { ChatMessageDeleteDto } from '../dtos/chat-message-delete.dto';
 
 @Injectable()
 export class ChatMessageService {
@@ -35,7 +37,7 @@ export class ChatMessageService {
         });
     }
 
-    async create(senderId: number, dto: ChatMessageSaveDto) {
+    async create(senderId: number, dto: ChatMessageCreateDto) {
         return this.prismaService.chatMessage.create({
             data: {
                 sender: {
@@ -53,7 +55,7 @@ export class ChatMessageService {
         });
     }
 
-    async update(senderId: number, dto: ChatMessageSaveDto) {
+    async update(senderId: number, dto: ChatMessageUpdateDto) {
         const message = await this.findByIdOrPanic(dto.id);
 
         if (message.senderId !== senderId) {
@@ -64,13 +66,11 @@ export class ChatMessageService {
             where: {
                 id: dto.id,
             },
-            data: {
-                content: dto.content,
-            },
+            data: dto,
         });
     }
 
-    async softDelete(senderId: number, dto: ChatMessageSaveDto) {
+    async softDelete(senderId: number, dto: ChatMessageDeleteDto) {
         const message = await this.findByIdOrPanic(dto.id);
 
         if (message.senderId !== senderId) {
