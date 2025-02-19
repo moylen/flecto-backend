@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Expose, Transform, Type } from 'class-transformer';
 import { TagSchema } from '../tag/tag.schema';
+import { FileSchema } from '../../../../file/domain/dto/file.schema';
 
 export class ArticleSchema {
     @ApiProperty()
@@ -48,4 +49,10 @@ export class ArticleSchema {
     @Transform(({ obj }) => obj.tags?.map((item: any) => item.tag))
     @Expose()
     tags: TagSchema[];
+
+    @ApiProperty({ type: () => [FileSchema] })
+    @Type(() => FileSchema)
+    @Transform(({ obj }) => obj.files?.map((file: any) => file.file))
+    @Expose()
+    files: FileSchema[];
 }

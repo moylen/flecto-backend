@@ -21,7 +21,8 @@ model File {
   mimeType   String
   createTime DateTime @default(now())
 
-  user User?
+  user     User?
+  articles ArticleFile[]
 
   @@map("file")
 }
@@ -108,6 +109,7 @@ model Article {
   views    ArticleView[]
   tags     ArticleTag[]
   comments ArticleComment[]
+  files    ArticleFile[]
 
   @@map("article")
 }
@@ -149,6 +151,17 @@ model ArticleComment {
   article Article @relation(fields: [articleId], references: [id])
 
   @@map("article_comment")
+}
+
+model ArticleFile {
+  articleId Int
+  fileId    Int
+
+  article Article @relation(fields: [articleId], references: [id])
+  file    File    @relation(fields: [fileId], references: [id])
+
+  @@id([articleId, fileId])
+  @@map("article_file")
 }
 
 model Tag {

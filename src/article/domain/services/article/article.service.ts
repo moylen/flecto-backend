@@ -98,9 +98,15 @@ export class ArticleService {
                         tag: true,
                     },
                 },
+                files: {
+                    select: {
+                        file: true,
+                    },
+                },
             },
             data: {
-                ...dto,
+                title: dto.title,
+                description: dto.description,
                 slug: SlugHelper.getSlug(dto.title),
                 creatorId: context.user.id,
                 tags: {
@@ -111,6 +117,15 @@ export class ArticleService {
                                     title: tag.title,
                                 },
                                 create: tag,
+                            },
+                        },
+                    })),
+                },
+                files: {
+                    create: dto.fileIds?.map((id) => ({
+                        file: {
+                            connect: {
+                                id,
                             },
                         },
                     })),
@@ -133,12 +148,18 @@ export class ArticleService {
                         tag: true,
                     },
                 },
+                files: {
+                    select: {
+                        file: true,
+                    },
+                },
             },
             where: {
                 id,
             },
             data: {
-                ...dto,
+                title: dto.title,
+                description: dto.description,
                 tags: {
                     deleteMany: {},
                     create: dto.tags?.map((tag) => ({
@@ -148,6 +169,16 @@ export class ArticleService {
                                     title: tag.title,
                                 },
                                 create: tag,
+                            },
+                        },
+                    })),
+                },
+                files: {
+                    deleteMany: {},
+                    create: dto.fileIds?.map((id) => ({
+                        file: {
+                            connect: {
+                                id,
                             },
                         },
                     })),
