@@ -5,6 +5,8 @@ import { HashService } from '../../../common/domain/services/hash.service';
 import { ContextDto } from '../../../common/domain/dtos/context.dto';
 import { UserSaveDto } from '../dtos/user/user-save.dto';
 import { UserUsernameUpdateDto } from '../dtos/user/user-username-update.dto';
+import { UserSearchDto } from '../dtos/user/user-search.dto';
+import { RepositoryHelper } from '../../../common/domain/helpers/repository.helper';
 
 @Injectable()
 export class UserService {
@@ -12,6 +14,18 @@ export class UserService {
         private readonly prismaService: PrismaService,
         private readonly hashService: HashService,
     ) {}
+
+    async findAll(dto: UserSearchDto) {
+        return this.prismaService.user.findMany({
+            where: {
+                username: {
+                    contains: dto.username,
+                    mode: 'insensitive',
+                },
+            },
+            ...RepositoryHelper.applyPagination(dto),
+        });
+    }
 
     async findByUsername(username: string) {
         return this.prismaService.user.findUnique({

@@ -1,4 +1,15 @@
-import { Body, Controller, Get, Param, ParseIntPipe, Patch, Put, UseGuards, UseInterceptors } from '@nestjs/common';
+import {
+    Body,
+    Controller,
+    Get,
+    Param,
+    ParseIntPipe,
+    Patch,
+    Put,
+    Query,
+    UseGuards,
+    UseInterceptors,
+} from '@nestjs/common';
 import { UserService } from '../../domain/services/user.service';
 import { UserPasswordUpdateDto } from '../../domain/dtos/user/user-password-update.dto';
 import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
@@ -10,6 +21,7 @@ import { UserSaveDto } from '../../domain/dtos/user/user-save.dto';
 import { UserDetailSchema } from '../../domain/dtos/user/user-detail.schema';
 import { UserSchema } from '../../domain/dtos/user/user.schema';
 import { UserUsernameUpdateDto } from '../../domain/dtos/user/user-username-update.dto';
+import { UserSearchDto } from '../../domain/dtos/user/user-search.dto';
 
 @ApiTags('User')
 @ApiBearerAuth()
@@ -17,6 +29,13 @@ import { UserUsernameUpdateDto } from '../../domain/dtos/user/user-username-upda
 @Controller('/user')
 export class UserController {
     constructor(private readonly userService: UserService) {}
+
+    @ApiOkResponse({ type: UserSchema, isArray: true })
+    @UseInterceptors(new MappingInterceptor(UserSchema))
+    @Get('/')
+    async findAll(@Query() dto: UserSearchDto) {
+        return this.userService.findAll(dto);
+    }
 
     @ApiOkResponse({ type: UserDetailSchema })
     @UseInterceptors(new MappingInterceptor(UserDetailSchema))
