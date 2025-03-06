@@ -18,8 +18,8 @@ import { Context } from '../../../auth/infrastructure/decorators/context.decorat
 import { ContextDto } from '../../../common/domain/dtos/context.dto';
 import { MappingInterceptor } from '../../../common/domain/interceptors/mapping.interceptor';
 import { UserSaveDto } from '../../domain/dtos/user/user-save.dto';
-import { UserDetailSchema } from '../../domain/dtos/user/user-detail.schema';
-import { UserSchema } from '../../domain/dtos/user/user.schema';
+import { UserDetailSchema } from '../schema/user/user-detail.schema';
+import { UserSchema } from '../schema/user/user.schema';
 import { UserUsernameUpdateDto } from '../../domain/dtos/user/user-username-update.dto';
 import { UserSearchDto } from '../../domain/dtos/user/user-search.dto';
 

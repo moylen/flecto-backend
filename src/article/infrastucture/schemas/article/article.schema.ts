@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Expose, Transform, Type } from 'class-transformer';
 import { TagSchema } from '../tag/tag.schema';
-import { FileSchema } from '../../../../file/domain/dto/file.schema';
+import { FileSchema } from '../../../../file/infrastructure/schemas/file.schema';
 
 export class ArticleSchema {
     @ApiProperty()

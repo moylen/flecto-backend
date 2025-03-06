@@ -3,7 +3,7 @@ import { Controller, Get, Query, UseGuards, UseInterceptors } from '@nestjs/comm
 import { JwtAuthGuard } from '../../../auth/infrastructure/guards/jwt-auth.guard';
 import { TagService } from 'src/article/domain/services/tag/tag.service';
 import { SearchDto } from '../../../common/domain/dtos/search.dto';
-import { TagSchema } from '../../domain/dtos/tag/tag.schema';
+import { TagSchema } from '../schemas/tag/tag.schema';
 import { MappingInterceptor } from '../../../common/domain/interceptors/mapping.interceptor';
 
 @ApiTags('Tag')

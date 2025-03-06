@@ -18,8 +18,8 @@ import { Context } from '../../../auth/infrastructure/decorators/context.decorat
 import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../../../auth/infrastructure/guards/jwt-auth.guard';
 import { MappingInterceptor } from '../../../common/domain/interceptors/mapping.interceptor';
-import { ArticleSchema } from '../../domain/dtos/article/article.schema';
-import { ArticleDetailSchema } from '../../domain/dtos/article/article-detail.schema';
+import { ArticleSchema } from '../schemas/article/article.schema';
+import { ArticleDetailSchema } from '../schemas/article/article-detail.schema';
 import { ArticleLikeService } from '../../domain/services/article/article-like.service';
 
 @ApiTags('Article')

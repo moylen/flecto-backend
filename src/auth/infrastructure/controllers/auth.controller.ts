@@ -4,7 +4,7 @@ import { RegisterDto } from '../../domain/dtos/register.dto';
 import { ApiBody, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { LoginDto } from '../../domain/dtos/login.dto';
 import { FastifyRequest, FastifyReply } from 'fastify';
-import { AccessTokenSchema } from '../../domain/dtos/access-token.schema';
+import { AccessTokenSchema } from '../schemas/access-token.schema';
 import { MappingInterceptor } from '../../../common/domain/interceptors/mapping.interceptor';
 
 @ApiTags('Auth')

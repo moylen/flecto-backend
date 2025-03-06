@@ -5,7 +5,7 @@ import { Context } from '../../../auth/infrastructure/decorators/context.decorat
 import { ContextDto } from '../../../common/domain/dtos/context.dto';
 import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../../../auth/infrastructure/guards/jwt-auth.guard';
-import { ChatMessageSchema } from '../../domain/dtos/chat-message.schema';
+import { ChatMessageSchema } from '../schemas/chat-message.schema';
 import { MappingInterceptor } from '../../../common/domain/interceptors/mapping.interceptor';
 
 @ApiTags('Chat message')

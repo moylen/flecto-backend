@@ -20,8 +20,8 @@ import { ArticleCommentUpdateDto } from '../../domain/dtos/article-comment/artic
 import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../../../auth/infrastructure/guards/jwt-auth.guard';
 import { MappingInterceptor } from '../../../common/domain/interceptors/mapping.interceptor';
-import { ArticleCommentDetailSchema } from '../../domain/dtos/article-comment/article-comment-detail.schema';
-import { ArticleCommentSchema } from '../../domain/dtos/article-comment/article-comment.schema';
+import { ArticleCommentDetailSchema } from '../schemas/article-comment/article-comment-detail.schema';
+import { ArticleCommentSchema } from '../schemas/article-comment/article-comment.schema';
 
 @ApiTags('Article comment')
 @ApiBearerAuth()

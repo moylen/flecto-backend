@@ -2,7 +2,7 @@ import { Controller, Get, Param, ParseIntPipe, Post, Req, UseGuards, UseIntercep
 import { FileService } from '../../domain/services/file.service';
 import { FastifyRequest } from 'fastify';
 import { MappingInterceptor } from '../../../common/domain/interceptors/mapping.interceptor';
-import { FileSchema } from '../../domain/dto/file.schema';
+import { FileSchema } from '../schemas/file.schema';
 import { ApiBearerAuth, ApiBody, ApiConsumes, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../../../auth/infrastructure/guards/jwt-auth.guard';
 import { FileSaveDto } from '../../domain/dto/file.save.dto';
