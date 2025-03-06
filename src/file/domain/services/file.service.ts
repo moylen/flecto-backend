@@ -32,7 +32,7 @@ export class FileService {
         return file;
     }
 
-    async getStreamByIdOrPanic(id: number): Promise<StreamableFile> {
+    async getStreamByFileIdOrPanic(id: number): Promise<StreamableFile> {
         const file = await this.findByIdOrPanic(id);
 
         const { Body } = await this.s3FileService.getOne(this.BUCKET_NAME, file.s3Key);

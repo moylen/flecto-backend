@@ -36,14 +36,14 @@ export class UserController {
     @UseInterceptors(new MappingInterceptor(UserSchema))
     @Patch('/password')
     async updatePassword(@Body() dto: UserPasswordUpdateDto, @Context() context: ContextDto) {
-        return this.userService.updatePasswordOrPanic(dto, context);
+        return this.userService.updatePassword(dto, context);
     }
 
     @ApiOkResponse({ type: UserSchema })
     @UseInterceptors(new MappingInterceptor(UserSchema))
     @Patch('/username')
     async updateUsername(@Body() dto: UserUsernameUpdateDto, @Context() context: ContextDto) {
-        return this.userService.updateUsernameOrPanic(dto, context);
+        return this.userService.updateUsername(dto, context);
     }
 
     @ApiOkResponse({ type: UserSchema })

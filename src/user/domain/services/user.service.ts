@@ -68,7 +68,7 @@ export class UserService {
         });
     }
 
-    async updatePasswordOrPanic(dto: UserPasswordUpdateDto, context: ContextDto) {
+    async updatePassword(dto: UserPasswordUpdateDto, context: ContextDto) {
         const user = await this.findByIdOrPanic(context.user.id);
 
         const isVerified = await this.hashService.verify(user.passwordHash, dto.oldPassword);
@@ -87,7 +87,7 @@ export class UserService {
         });
     }
 
-    async updateUsernameOrPanic(dto: UserUsernameUpdateDto, context: ContextDto) {
+    async updateUsername(dto: UserUsernameUpdateDto, context: ContextDto) {
         return this.prismaService.user.update({
             where: {
                 id: context.user.id,

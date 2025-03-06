@@ -27,7 +27,7 @@ export class FileController {
     })
     @Get('/:id')
     async getStreamById(@Param('id', ParseIntPipe) id: number) {
-        return this.fileService.getStreamByIdOrPanic(id);
+        return this.fileService.getStreamByFileIdOrPanic(id);
     }
 
     @ApiOkResponse({ type: FileSchema })
