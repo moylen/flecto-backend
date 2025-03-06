@@ -14,6 +14,6 @@ import { ArticleCommentController } from './controllers/article-comment.controll
     imports: [DatabaseModule, UserModule],
     controllers: [ArticleController, ArticleCommentController, TagController],
     providers: [ArticleService, ArticleLikeService, ArticleViewService, ArticleCommentService, TagService],
-    exports: [ArticleService, ArticleLikeService, ArticleViewService, ArticleCommentService, TagService],
+    exports: [],
 })
 export class ArticleModule {}

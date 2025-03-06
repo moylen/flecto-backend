@@ -5,7 +5,7 @@ import { WsException } from '@nestjs/websockets';
 
 @Injectable()
 export class WsJwtAuthGuard extends AuthGuard('ws-jwt') {
-    handleRequest(err: any, user: any, info: any, context: ExecutionContext) {
+    handleRequest<TUser>(err: any, user: any, info: any, context: ExecutionContext): TUser {
         const socket = context.switchToWs().getClient<AuthSocket>();
         if (err || !user) {
             socket.disconnect();

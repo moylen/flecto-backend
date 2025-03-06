@@ -8,6 +8,6 @@ import { S3FileService } from './services/s3-file.service';
     imports: [DatabaseModule],
     controllers: [FileController],
     providers: [FileService, S3FileService],
-    exports: [FileService, S3FileService],
+    exports: [],
 })
 export class FileModule {}

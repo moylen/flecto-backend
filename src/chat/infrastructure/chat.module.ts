@@ -8,6 +8,6 @@ import { ChatMessageController } from './controllers/chat-message.controller';
     imports: [DatabaseModule],
     controllers: [ChatMessageController],
     providers: [ChatGateway, ChatMessageService],
-    exports: [ChatGateway, ChatMessageService],
+    exports: [],
 })
 export class ChatModule {}
