@@ -33,7 +33,9 @@ async function bootstrap() {
     useContainer(app.select(AppModule), { fallbackOnErrors: true });
 
     // Run
-    await app.listen(configService.get<number>('APPLICATION_PORT') || 5000);
+    const port = configService.get<string>('APPLICATION_PORT') || 5000;
+    await app.listen(port);
+    console.info(`Server started on http://localhost:${port}`);
 }
 
 bootstrap().then();
