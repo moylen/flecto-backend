@@ -8,6 +8,7 @@ import fastifyCookie from '@fastify/cookie';
 import { apiReference } from '@scalar/nestjs-api-reference';
 import { useContainer } from 'class-validator';
 import { fastifyMultipart } from '@fastify/multipart';
+import { ConfigHelper } from './common/domain/helpers/config.helper';
 
 async function bootstrap() {
     const app = await NestFactory.create<NestFastifyApplication>(AppModule, new FastifyAdapter(), {
@@ -18,16 +19,17 @@ async function bootstrap() {
     const configService = app.get(ConfigService);
 
     // Swagger
-    const config = new DocumentBuilder().setTitle('Flecto API').setVersion('0.0.1').addBearerAuth().build();
-    const documentFactory = () => SwaggerModule.createDocument(app, config);
-    // SwaggerModule.setup('api/docs', app, documentFactory);
+    if (ConfigHelper.normalizeBoolean(configService.get<string>('DEV_MODE'))) {
+        const config = new DocumentBuilder().setTitle('Flecto API').setVersion('0.0.1').addBearerAuth().build();
+        const documentFactory = () => SwaggerModule.createDocument(app, config);
+        app.use('/api/docs', apiReference({ withFastify: true, spec: { content: documentFactory } }));
+    }
 
     // Middlewares
     app.setGlobalPrefix('api');
     app.useGlobalPipes(new ValidationPipe({ transform: true, whitelist: true }));
     await app.register(fastifyCookie);
     await app.register(fastifyMultipart);
-    app.use('/api/docs', apiReference({ withFastify: true, spec: { content: documentFactory } }));
     useContainer(app.select(AppModule), { fallbackOnErrors: true });
 
     // Run
