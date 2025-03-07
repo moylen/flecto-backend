@@ -18,10 +18,7 @@ export class UserService {
     async findAll(dto: UserSearchDto) {
         return this.prismaService.user.findMany({
             where: {
-                username: {
-                    contains: dto.username,
-                    mode: 'insensitive',
-                },
+                username: dto.username,
             },
             ...RepositoryHelper.applyPagination(dto),
         });
