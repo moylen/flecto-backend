@@ -25,7 +25,6 @@ import { UserSearchDto } from '../../domain/dtos/user/user-search.dto';
 
 @ApiTags('User')
 @ApiBearerAuth()
-@UseGuards(JwtAuthGuard)
 @Controller('/user')
 export class UserController {
     constructor(private readonly userService: UserService) {}
@@ -38,6 +37,7 @@ export class UserController {
     }
 
     @ApiOkResponse({ type: UserDetailSchema })
+    @UseGuards(JwtAuthGuard)
     @UseInterceptors(new MappingInterceptor(UserDetailSchema))
     @Get('/:id')
     async findById(@Param('id', ParseIntPipe) id: number) {
@@ -45,6 +45,7 @@ export class UserController {
     }
 
     @ApiOkResponse({ type: UserSchema })
+    @UseGuards(JwtAuthGuard)
     @UseInterceptors(new MappingInterceptor(UserSchema))
     @Put('/')
     async update(@Body() dto: UserSaveDto, @Context() context: ContextDto) {
@@ -52,6 +53,7 @@ export class UserController {
     }
 
     @ApiOkResponse({ type: UserSchema })
+    @UseGuards(JwtAuthGuard)
     @UseInterceptors(new MappingInterceptor(UserSchema))
     @Patch('/password')
     async updatePassword(@Body() dto: UserPasswordUpdateDto, @Context() context: ContextDto) {
@@ -59,6 +61,7 @@ export class UserController {
     }
 
     @ApiOkResponse({ type: UserSchema })
+    @UseGuards(JwtAuthGuard)
     @UseInterceptors(new MappingInterceptor(UserSchema))
     @Patch('/username')
     async updateUsername(@Body() dto: UserUsernameUpdateDto, @Context() context: ContextDto) {
@@ -66,6 +69,7 @@ export class UserController {
     }
 
     @ApiOkResponse({ type: UserSchema })
+    @UseGuards(JwtAuthGuard)
     @UseInterceptors(new MappingInterceptor(UserSchema))
     @Patch('/avatar/:id')
     async updateAvatar(@Param('id', ParseIntPipe) id: number, @Context() context: ContextDto) {
