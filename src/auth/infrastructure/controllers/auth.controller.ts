@@ -1,4 +1,14 @@
-import { BadRequestException, Body, Controller, Post, Req, Res, UseInterceptors } from '@nestjs/common';
+import {
+    BadRequestException,
+    Body,
+    Controller,
+    HttpCode,
+    HttpStatus,
+    Post,
+    Req,
+    Res,
+    UseInterceptors,
+} from '@nestjs/common';
 import { AuthService } from '../../domain/services/auth.service';
 import { RegisterDto } from '../../domain/dtos/register.dto';
 import { ApiBody, ApiOkResponse, ApiTags } from '@nestjs/swagger';
@@ -44,5 +54,14 @@ export class AuthController {
             throw new BadRequestException('Refresh token not found');
         }
         return this.authService.refresh(req.cookies.refreshToken);
+    }
+
+    @HttpCode(HttpStatus.OK)
+    @Post('/logout')
+    async logout(@Req() req: FastifyRequest) {
+        if (!req.cookies.refreshToken) {
+            throw new BadRequestException('Refresh token not found');
+        }
+        return this.authService.logout(req.cookies.refreshToken);
     }
 }

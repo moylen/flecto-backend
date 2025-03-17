@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../database/infrastructure/service/prisma.service';
+import { UserTokenSaveDto } from '../dtos/user-token/user-token-save.dto';
 
 @Injectable()
 export class UserTokenService {
@@ -13,6 +14,7 @@ export class UserTokenService {
             where: {
                 AND: {
                     refreshToken,
+                    isRevoked: false,
                     expireTime: {
                         gte: new Date(),
                     },
@@ -21,12 +23,17 @@ export class UserTokenService {
         });
     }
 
-    async create(userId: number, refreshToken: string, expireTime: Date) {
-        return this.prismaService.userToken.create({
-            data: {
-                userId,
+    async create(dto: UserTokenSaveDto) {
+        return this.prismaService.userToken.create({ data: dto });
+    }
+
+    async revoke(refreshToken: string) {
+        return this.prismaService.userToken.update({
+            where: {
                 refreshToken,
-                expireTime,
+            },
+            data: {
+                isRevoked: true,
             },
         });
     }

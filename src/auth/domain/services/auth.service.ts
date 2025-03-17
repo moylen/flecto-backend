@@ -68,6 +68,10 @@ export class AuthService {
         return { accessToken };
     }
 
+    async logout(refreshToken: string): Promise<void> {
+        await this.userTokenService.revoke(refreshToken);
+    }
+
     getRefreshTokenExpireTime(): Date {
         return addMilliseconds(new Date(), ms(this.configService.get<ms.StringValue>('REFRESH_TOKEN_EXP')));
     }
@@ -78,7 +82,11 @@ export class AuthService {
             this.signToken(user, this.REFRESH_OPTIONS),
         ]);
 
-        await this.userTokenService.create(user.id, refreshToken, this.getRefreshTokenExpireTime());
+        await this.userTokenService.create({
+            userId: user.id,
+            refreshToken,
+            expireTime: this.getRefreshTokenExpireTime(),
+        });
 
         return [accessToken, refreshToken];
     }
