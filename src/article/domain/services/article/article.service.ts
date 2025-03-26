@@ -40,6 +40,7 @@ export class ArticleService {
                         tag: true,
                     },
                 },
+                auction: true,
                 _count: {
                     select: {
                         likes: true,

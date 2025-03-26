@@ -27,8 +27,8 @@ async function bootstrap() {
     // Swagger
     if (ConfigHelper.normalizeBoolean(configService.get<string>('DEV_MODE'))) {
         const config = new DocumentBuilder().setTitle('Flecto API').setVersion('0.0.1').addBearerAuth().build();
-        const documentFactory = () => SwaggerModule.createDocument(app, config);
-        app.use('/api/docs', apiReference({ withFastify: true, spec: { content: documentFactory } }));
+        const document = SwaggerModule.createDocument(app, config);
+        app.use('/api/docs', apiReference({ withFastify: true, spec: { content: document } }));
     }
 
     // Middlewares

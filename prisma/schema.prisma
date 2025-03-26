@@ -7,11 +7,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum UserRole {
-  user
-  admin
-}
-
 model File {
   id         Int      @id @default(autoincrement())
   filename   String
@@ -27,12 +22,17 @@ model File {
   @@map("file")
 }
 
+enum UserRole {
+  USER
+  ADMIN
+}
+
 model User {
   id           Int       @id @default(autoincrement())
   username     String    @unique
   email        String?   @unique
   passwordHash String
-  role         UserRole  @default(user)
+  role         UserRole  @default(USER)
   name         String?
   surname      String?
   description  String?
@@ -51,6 +51,8 @@ model User {
   sendedMessages   ChatMessage[]      @relation("sender")
   receivedMessages ChatMessage[]      @relation("receiver")
   comments         ArticleComment[]
+  auctions         Auction[]
+  auctionHistory   AuctionHistory[]
 
   @@map("user")
 }
@@ -111,6 +113,7 @@ model Article {
   tags     ArticleTag[]
   comments ArticleComment[]
   files    ArticleFile[]
+  auction  Auction?
 
   @@map("article")
 }
@@ -198,4 +201,44 @@ model ChatMessage {
   receiver User @relation("receiver", fields: [receiverId], references: [id])
 
   @@map("chat_message")
+}
+
+model Auction {
+  id           Int       @id @default(autoincrement())
+  creatorId    Int
+  articleId    Int       @unique
+  startPrice   Float
+  currentPrice Float
+  stepPrice    Float
+  untilTime    DateTime
+  isOver       Boolean   @default(false)
+  createTime   DateTime  @default(now())
+  updateTime   DateTime  @updatedAt
+  deleteTime   DateTime?
+
+  creator User             @relation(fields: [creatorId], references: [id])
+  article Article          @relation(fields: [articleId], references: [id])
+  history AuctionHistory[]
+
+  @@map("auction")
+}
+
+enum AuctionAction {
+  BEGIN
+  END
+  BID
+}
+
+model AuctionHistory {
+  id         Int           @id @default(autoincrement())
+  auctionId  Int
+  userId     Int?
+  action     AuctionAction
+  isSystem   Boolean
+  createTime DateTime      @default(now())
+
+  auction Auction @relation(fields: [auctionId], references: [id])
+  user    User?   @relation(fields: [userId], references: [id])
+
+  @@map("auction_history")
 }
