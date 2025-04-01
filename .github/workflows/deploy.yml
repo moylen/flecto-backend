@@ -21,8 +21,10 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           port: ${{ secrets.SSH_PORT }}
           script: |
+            set -e
             cd /root/flecto-backend
             git pull origin main
+            docker compose build
             docker compose down
-            docker compose up -d --build
+            docker compose up -d
             docker system prune -af

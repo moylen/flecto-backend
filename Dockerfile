@@ -6,9 +6,9 @@ COPY package*.json .
 
 RUN npm ci
 
-COPY . .
+RUN npx prisma generate
 
-RUN prisma generate
+COPY . .
 
 RUN npm run build
 
@@ -24,4 +24,4 @@ COPY --from=builder /app/prisma ./prisma
 
 RUN npm ci --omit=dev
 
-CMD ["sh", "-c", "npm run migrate:deploy && node dist/main.js"]
+CMD ["sh", "-c", "npm run migrate:deploy && npm run start:prod"]
