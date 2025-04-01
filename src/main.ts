@@ -18,10 +18,8 @@ async function bootstrap() {
     // Config
     const configService = app.get(ConfigService);
     app.enableCors({
-        // origin: ['http://localhost:5173', configService.get<string>('ORIGIN')],
-        origin: '*',
-        // methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
-        methods: '*',
+        origin: ['http://localhost:5173', configService.get<string>('ORIGIN')],
+        methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
         allowedHeaders: ['Content-Type', 'Authorization'],
         credentials: true,
     });
@@ -42,7 +40,7 @@ async function bootstrap() {
 
     // Run
     const port = configService.get<string>('APPLICATION_PORT');
-    await app.listen(port);
+    await app.listen(port, '0.0.0.0');
     console.info(`Server started on http://localhost:${port}`);
 }
 
