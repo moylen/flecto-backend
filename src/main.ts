@@ -18,9 +18,11 @@ async function bootstrap() {
     // Config
     const configService = app.get(ConfigService);
     app.enableCors({
-        origin: ['http://localhost:5173', configService.get<string>('ORIGIN')],
-        methods: 'GET,POST,PUT,PATCH,DELETE',
-        allowedHeaders: 'Content-Type, Authorization',
+        // origin: ['http://localhost:5173', configService.get<string>('ORIGIN')],
+        origin: '*',
+        // methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
+        methods: '*',
+        allowedHeaders: ['Content-Type', 'Authorization'],
         credentials: true,
     });
 
