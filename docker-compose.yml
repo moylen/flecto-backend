@@ -14,8 +14,8 @@ services:
   database:
     image: postgres:16.4-alpine
     restart: unless-stopped
-    ports:
-      - "${PGPORT}:${PGPORT}"
+    expose:
+      - "${PGPORT}"
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
