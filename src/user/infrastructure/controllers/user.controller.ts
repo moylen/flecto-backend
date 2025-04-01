@@ -22,6 +22,8 @@ import { UserDetailSchema } from '../schema/user/user-detail.schema';
 import { UserSchema } from '../schema/user/user.schema';
 import { UserUsernameUpdateDto } from '../../domain/dtos/user/user-username-update.dto';
 import { UserSearchDto } from '../../domain/dtos/user/user-search.dto';
+import { UserEmailUpdateDto } from '../../domain/dtos/user/user-email-update.dto';
+import { UserConfirmEmailDto } from '../../domain/dtos/user/user-confirm-email.dto';
 
 @ApiTags('User')
 @ApiBearerAuth()
@@ -66,6 +68,20 @@ export class UserController {
     @Patch('/username')
     async updateUsername(@Body() dto: UserUsernameUpdateDto, @Context() context: ContextDto) {
         return this.userService.updateUsername(dto, context);
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Patch('/email')
+    async updateEmail(@Body() dto: UserEmailUpdateDto, @Context() context: ContextDto) {
+        return this.userService.updateEmail(dto, context);
+    }
+
+    @ApiOkResponse({ type: UserSchema })
+    @UseGuards(JwtAuthGuard)
+    @UseInterceptors(new MappingInterceptor(UserSchema))
+    @Patch('/email/confirm')
+    async confirmEmailUpdate(@Body() dto: UserConfirmEmailDto, @Context() context: ContextDto) {
+        return this.userService.confirmEmailUpdateOrPanic(dto, context);
     }
 
     @ApiOkResponse({ type: UserSchema })

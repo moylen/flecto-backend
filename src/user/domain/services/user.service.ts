@@ -7,12 +7,18 @@ import { UserSaveDto } from '../dtos/user/user-save.dto';
 import { UserUsernameUpdateDto } from '../dtos/user/user-username-update.dto';
 import { UserSearchDto } from '../dtos/user/user-search.dto';
 import { RepositoryHelper } from '../../../common/domain/helpers/repository.helper';
+import { UserEmailUpdateDto } from '../dtos/user/user-email-update.dto';
+import { UserEmailConfirmService } from './user-email-confirm.service';
+import { MailService } from '../../../notifier/infrastructure/services/mail.service';
+import { UserConfirmEmailDto } from '../dtos/user/user-confirm-email.dto';
 
 @Injectable()
 export class UserService {
     constructor(
         private readonly prismaService: PrismaService,
         private readonly hashService: HashService,
+        private readonly userEmailConfirmService: UserEmailConfirmService,
+        private readonly mailService: MailService,
     ) {}
 
     async findAll(dto: UserSearchDto) {
@@ -116,6 +122,24 @@ export class UserService {
             },
             data: {
                 avatarId,
+            },
+        });
+    }
+
+    async updateEmail(dto: UserEmailUpdateDto, context: ContextDto): Promise<void> {
+        const emailConfirm = await this.userEmailConfirmService.create(dto, context);
+        await this.mailService.sendEmailUpdate(emailConfirm.newEmail, emailConfirm.code);
+    }
+
+    async confirmEmailUpdateOrPanic(dto: UserConfirmEmailDto, context: ContextDto) {
+        const emailConfirm = await this.userEmailConfirmService.confirmOrPanic(dto, context);
+
+        return this.prismaService.user.update({
+            where: {
+                id: context.user.id,
+            },
+            data: {
+                email: emailConfirm.newEmail,
             },
         });
     }

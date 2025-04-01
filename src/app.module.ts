@@ -8,6 +8,7 @@ import { ArticleModule } from './article/infrastucture/article.module';
 import { ChatModule } from './chat/infrastructure/chat.module';
 import { AuctionModule } from './auction/infrastructure/auction.module';
 import { ScheduleModule } from '@nestjs/schedule';
+import { NotifierModule } from './notifier/infrastructure/notifier.module';
 
 @Module({
     imports: [
@@ -20,6 +21,7 @@ import { ScheduleModule } from '@nestjs/schedule';
         ArticleModule,
         ChatModule,
         AuctionModule,
+        NotifierModule,
     ],
 })
 export class AppModule {}
