@@ -58,10 +58,11 @@ export class AuthController {
 
     @HttpCode(HttpStatus.OK)
     @Post('/logout')
-    async logout(@Req() req: FastifyRequest) {
+    async logout(@Req() req: FastifyRequest, @Res({ passthrough: true }) res: FastifyReply) {
         if (!req.cookies.refreshToken) {
             throw new BadRequestException('Refresh token not found');
         }
+        res.clearCookie('refreshToken', { httpOnly: true });
         return this.authService.logout(req.cookies.refreshToken);
     }
 }
