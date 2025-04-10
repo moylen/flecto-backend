@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsNumber, IsOptional, IsString, IsUrl } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class UserContactSaveDto {
     @ApiProperty({ required: false })
@@ -14,6 +14,6 @@ export class UserContactSaveDto {
 
     @ApiProperty()
     @IsNotEmpty()
-    @IsUrl({ require_protocol: false })
+    @IsString()
     link: string;
 }
