@@ -56,6 +56,10 @@ export class UserService {
         return user;
     }
 
+    async findMeOrPanic(context: ContextDto) {
+        return this.findByIdOrPanic(context.user.id);
+    }
+
     async create(username: string, passwordHash: string) {
         return this.prismaService.user.create({ data: { username, passwordHash } });
     }

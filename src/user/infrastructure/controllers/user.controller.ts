@@ -41,6 +41,14 @@ export class UserController {
     @ApiOkResponse({ type: UserDetailSchema })
     @UseGuards(JwtAuthGuard)
     @UseInterceptors(new MappingInterceptor(UserDetailSchema))
+    @Get('/me')
+    async findMe(@Context() context: ContextDto) {
+        return this.userService.findMeOrPanic(context);
+    }
+
+    @ApiOkResponse({ type: UserDetailSchema })
+    @UseGuards(JwtAuthGuard)
+    @UseInterceptors(new MappingInterceptor(UserDetailSchema))
     @Get('/:id')
     async findById(@Param('id', ParseIntPipe) id: number) {
         return this.userService.findByIdOrPanic(id);
