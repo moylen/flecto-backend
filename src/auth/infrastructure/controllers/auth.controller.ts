@@ -62,7 +62,7 @@ export class AuthController {
         if (!req.cookies.refreshToken) {
             throw new BadRequestException('Refresh token not found');
         }
-        res.clearCookie('refreshToken', { httpOnly: true });
+        res.clearCookie('refreshToken', { httpOnly: true, path: '/api/auth' });
         return this.authService.logout(req.cookies.refreshToken);
     }
 }
