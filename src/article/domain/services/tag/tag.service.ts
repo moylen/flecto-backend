@@ -12,6 +12,7 @@ export class TagService {
             where: {
                 title: {
                     contains: dto.query,
+                    mode: 'insensitive',
                 },
             },
             ...RepositoryHelper.applyPagination(dto),
