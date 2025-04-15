@@ -34,7 +34,11 @@ export class ArticleService {
             include: {
                 creator: true,
                 auction: true,
-                files: true,
+                files: {
+                    select: {
+                        file: true,
+                    },
+                },
                 tags: {
                     select: {
                         tag: true,
@@ -75,7 +79,11 @@ export class ArticleService {
     async findAll(dto: SearchDto, context: ContextDto) {
         const articles = await this.prismaService.article.findMany({
             include: {
-                files: true,
+                files: {
+                    select: {
+                        file: true,
+                    },
+                },
                 tags: {
                     select: {
                         tag: true,
