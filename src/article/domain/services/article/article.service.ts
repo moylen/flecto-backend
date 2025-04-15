@@ -5,14 +5,12 @@ import { SearchDto } from '../../../../common/domain/dtos/search.dto';
 import { PrismaService } from '../../../../database/infrastructure/service/prisma.service';
 import { SlugHelper } from '../../../../common/domain/helpers/slug.helper';
 import { RepositoryHelper } from '../../../../common/domain/helpers/repository.helper';
-import { ArticleLikeService } from './article-like.service';
 import { ArticleViewService } from './article-view.service';
 
 @Injectable()
 export class ArticleService {
     constructor(
         private readonly prismaService: PrismaService,
-        private readonly articleLikeService: ArticleLikeService,
         private readonly articleViewService: ArticleViewService,
     ) {}
 
@@ -35,12 +33,18 @@ export class ArticleService {
         const article = await this.prismaService.article.findUnique({
             include: {
                 creator: true,
+                auction: true,
+                files: true,
                 tags: {
                     select: {
                         tag: true,
                     },
                 },
-                auction: true,
+                likes: {
+                    where: {
+                        userId: context.user.id,
+                    },
+                },
                 _count: {
                     select: {
                         likes: true,
@@ -58,25 +62,34 @@ export class ArticleService {
             throw new NotFoundException('Article not found');
         }
 
-        const [like] = await Promise.all([
-            this.articleLikeService.findByArticleIdAndUserId(article.id, context.user.id),
-            this.articleViewService.create(article.id, context),
-        ]);
+        await this.articleViewService.create(article.id, context.user.id);
 
         return {
             ...article,
-            isLiked: !!like,
+            isLiked: article.likes.length > 0,
             likesCount: article._count.likes,
             viewsCount: article._count.views,
         };
     }
 
-    async findAll(dto: SearchDto) {
-        return this.prismaService.article.findMany({
+    async findAll(dto: SearchDto, context: ContextDto) {
+        const articles = await this.prismaService.article.findMany({
             include: {
+                files: true,
                 tags: {
                     select: {
                         tag: true,
+                    },
+                },
+                likes: {
+                    where: {
+                        userId: context.user.id,
+                    },
+                },
+                _count: {
+                    select: {
+                        likes: true,
+                        views: true,
                     },
                 },
             },
@@ -89,22 +102,17 @@ export class ArticleService {
             },
             ...RepositoryHelper.applyPagination(dto),
         });
+
+        return articles.map((article) => ({
+            ...article,
+            isLiked: article.likes.length > 0,
+            likesCount: article._count.likes,
+            viewsCount: article._count.views,
+        }));
     }
 
     async create(dto: ArticleSaveDto, context: ContextDto) {
         return this.prismaService.article.create({
-            include: {
-                tags: {
-                    select: {
-                        tag: true,
-                    },
-                },
-                files: {
-                    select: {
-                        file: true,
-                    },
-                },
-            },
             data: {
                 title: dto.title,
                 description: dto.description,

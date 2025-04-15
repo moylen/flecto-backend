@@ -21,6 +21,7 @@ import { MappingInterceptor } from '../../../common/domain/interceptors/mapping.
 import { ArticleSchema } from '../schemas/article/article.schema';
 import { ArticleDetailSchema } from '../schemas/article/article-detail.schema';
 import { ArticleLikeService } from '../../domain/services/article/article-like.service';
+import { ArticleWithComputedSchema } from '../schemas/article/article-with-computed.schema';
 
 @ApiTags('Article')
 @ApiBearerAuth()
@@ -39,11 +40,11 @@ export class ArticleController {
         return this.articleService.findBySlugOrPanic(slug, context);
     }
 
-    @ApiOkResponse({ type: ArticleSchema })
-    @UseInterceptors(new MappingInterceptor(ArticleSchema))
+    @ApiOkResponse({ type: ArticleWithComputedSchema })
+    @UseInterceptors(new MappingInterceptor(ArticleWithComputedSchema))
     @Get('/')
-    async findAll(@Body() dto: SearchDto) {
-        return this.articleService.findAll(dto);
+    async findAll(@Body() dto: SearchDto, @Context() context: ContextDto) {
+        return this.articleService.findAll(dto, context);
     }
 
     @ApiOkResponse({ type: ArticleSchema })
