@@ -1,11 +1,11 @@
 import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { ArticleSaveDto } from '../../dtos/article/article-save.dto';
 import { ContextDto } from '../../../../common/domain/dtos/context.dto';
-import { SearchDto } from '../../../../common/domain/dtos/search.dto';
 import { PrismaService } from '../../../../database/infrastructure/service/prisma.service';
 import { SlugHelper } from '../../../../common/domain/helpers/slug.helper';
 import { RepositoryHelper } from '../../../../common/domain/helpers/repository.helper';
 import { ArticleViewService } from './article-view.service';
+import { SortedSearchDto } from '../../../../common/domain/dtos/sorted-search.dto';
 
 @Injectable()
 export class ArticleService {
@@ -76,7 +76,9 @@ export class ArticleService {
         };
     }
 
-    async findAll(dto: SearchDto, context: ContextDto) {
+    async findAll(dto: SortedSearchDto, context: ContextDto) {
+        const sortFields = RepositoryHelper.extractSortFields(dto);
+
         const articles = await this.prismaService.article.findMany({
             include: {
                 files: {
@@ -108,6 +110,19 @@ export class ArticleService {
                 },
                 deleteTime: null,
             },
+            orderBy: [
+                sortFields['likes'] && {
+                    likes: {
+                        _count: sortFields['likes'],
+                    },
+                },
+                sortFields['views'] && {
+                    views: {
+                        _count: sortFields['views'],
+                    },
+                },
+                sortFields['createTime'] && { createTime: sortFields['createTime'] },
+            ],
             ...RepositoryHelper.applyPagination(dto),
         });
 

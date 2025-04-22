@@ -7,11 +7,11 @@ import {
     Patch,
     Post,
     Put,
+    Query,
     UseGuards,
     UseInterceptors,
 } from '@nestjs/common';
 import { ArticleService } from '../../domain/services/article/article.service';
-import { SearchDto } from '../../../common/domain/dtos/search.dto';
 import { ArticleSaveDto } from '../../domain/dtos/article/article-save.dto';
 import { ContextDto } from '../../../common/domain/dtos/context.dto';
 import { Context } from '../../../auth/infrastructure/decorators/context.decorator';
@@ -22,6 +22,7 @@ import { ArticleSchema } from '../schemas/article/article.schema';
 import { ArticleDetailSchema } from '../schemas/article/article-detail.schema';
 import { ArticleLikeService } from '../../domain/services/article/article-like.service';
 import { ArticleWithComputedSchema } from '../schemas/article/article-with-computed.schema';
+import { SortedSearchDto } from '../../../common/domain/dtos/sorted-search.dto';
 
 @ApiTags('Article')
 @ApiBearerAuth()
@@ -43,7 +44,7 @@ export class ArticleController {
     @ApiOkResponse({ type: ArticleWithComputedSchema })
     @UseInterceptors(new MappingInterceptor(ArticleWithComputedSchema))
     @Get('/')
-    async findAll(@Body() dto: SearchDto, @Context() context: ContextDto) {
+    async findAll(@Query() dto: SortedSearchDto, @Context() context: ContextDto) {
         return this.articleService.findAll(dto, context);
     }
 
