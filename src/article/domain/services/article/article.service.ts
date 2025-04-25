@@ -6,6 +6,7 @@ import { SlugHelper } from '../../../../common/domain/helpers/slug.helper';
 import { RepositoryHelper } from '../../../../common/domain/helpers/repository.helper';
 import { ArticleViewService } from './article-view.service';
 import { SortedSearchDto } from '../../../../common/domain/dtos/sorted-search.dto';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class ArticleService {
@@ -79,59 +80,67 @@ export class ArticleService {
     async findAll(dto: SortedSearchDto, context: ContextDto) {
         const sortFields = RepositoryHelper.extractSortFields(dto);
 
-        const articles = await this.prismaService.article.findMany({
-            include: {
-                files: {
-                    select: {
-                        file: true,
-                    },
-                },
-                tags: {
-                    select: {
-                        tag: true,
-                    },
-                },
-                likes: {
-                    where: {
-                        userId: context.user.id,
-                    },
-                },
-                _count: {
-                    select: {
-                        likes: true,
-                        views: true,
-                    },
-                },
+        const where: Prisma.ArticleWhereInput = {
+            title: {
+                contains: dto.query,
+                mode: 'insensitive',
             },
-            where: {
-                title: {
-                    contains: dto.query,
-                    mode: 'insensitive',
-                },
-                deleteTime: null,
-            },
-            orderBy: [
-                sortFields['likes'] && {
-                    likes: {
-                        _count: sortFields['likes'],
-                    },
-                },
-                sortFields['views'] && {
-                    views: {
-                        _count: sortFields['views'],
-                    },
-                },
-                sortFields['createTime'] && { createTime: sortFields['createTime'] },
-            ],
-            ...RepositoryHelper.applyPagination(dto),
-        });
+            deleteTime: null,
+        };
 
-        return articles.map((article) => ({
-            ...article,
-            isLiked: article.likes.length > 0,
-            likesCount: article._count.likes,
-            viewsCount: article._count.views,
-        }));
+        const [articles, total] = await this.prismaService.$transaction([
+            this.prismaService.article.findMany({
+                where,
+                include: {
+                    files: {
+                        select: {
+                            file: true,
+                        },
+                    },
+                    tags: {
+                        select: {
+                            tag: true,
+                        },
+                    },
+                    likes: {
+                        where: {
+                            userId: context.user.id,
+                        },
+                    },
+                    _count: {
+                        select: {
+                            likes: true,
+                            views: true,
+                        },
+                    },
+                },
+                orderBy: [
+                    sortFields['likes'] && {
+                        likes: {
+                            _count: sortFields['likes'],
+                        },
+                    },
+                    sortFields['views'] && {
+                        views: {
+                            _count: sortFields['views'],
+                        },
+                    },
+                    sortFields['createTime'] && { createTime: sortFields['createTime'] },
+                ],
+                ...RepositoryHelper.applyPagination(dto),
+            }),
+            this.prismaService.article.count({ where }),
+        ]);
+
+        return {
+            total,
+            items: articles.map((article) => ({
+                ...article,
+                isLiked: article.likes.length > 0,
+                likesCount: article._count.likes,
+                viewsCount: article._count.views,
+            })),
+        };
     }
 
     async create(dto: ArticleSaveDto, context: ContextDto) {

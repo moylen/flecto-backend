@@ -21,8 +21,8 @@ import { MappingInterceptor } from '../../../common/domain/interceptors/mapping.
 import { ArticleSchema } from '../schemas/article/article.schema';
 import { ArticleDetailSchema } from '../schemas/article/article-detail.schema';
 import { ArticleLikeService } from '../../domain/services/article/article-like.service';
-import { ArticleWithComputedSchema } from '../schemas/article/article-with-computed.schema';
 import { SortedSearchDto } from '../../../common/domain/dtos/sorted-search.dto';
+import { ArticleWithTotalSchema } from '../schemas/article/article-with-total.schema';
 
 @ApiTags('Article')
 @ApiBearerAuth()
@@ -41,8 +41,8 @@ export class ArticleController {
         return this.articleService.findBySlugOrPanic(slug, context);
     }
 
-    @ApiOkResponse({ type: ArticleWithComputedSchema })
-    @UseInterceptors(new MappingInterceptor(ArticleWithComputedSchema))
+    @ApiOkResponse({ type: ArticleWithTotalSchema })
+    @UseInterceptors(new MappingInterceptor(ArticleWithTotalSchema))
     @Get('/')
     async findAll(@Query() dto: SortedSearchDto, @Context() context: ContextDto) {
         return this.articleService.findAll(dto, context);
