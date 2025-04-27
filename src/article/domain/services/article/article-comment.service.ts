@@ -5,6 +5,7 @@ import { ContextDto } from '../../../../common/domain/dtos/context.dto';
 import { ArticleCommentSearchDto } from '../../dtos/article-comment/article-comment-search.dto';
 import { RepositoryHelper } from '../../../../common/domain/helpers/repository.helper';
 import { ArticleCommentUpdateDto } from '../../dtos/article-comment/article-comment-update.dto';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class ArticleCommentService {
@@ -26,16 +27,26 @@ export class ArticleCommentService {
     }
 
     async findAll(dto: ArticleCommentSearchDto) {
-        return this.prismaService.articleComment.findMany({
-            include: {
-                creator: true,
-            },
-            where: {
-                articleId: dto.articleId,
-                deleteTime: null,
-            },
-            ...RepositoryHelper.applyPagination(dto),
-        });
+        const where: Prisma.ArticleCommentWhereInput = {
+            articleId: dto.articleId,
+            deleteTime: null,
+        };
+
+        const [comments, total] = await this.prismaService.$transaction([
+            this.prismaService.articleComment.findMany({
+                where,
+                include: {
+                    creator: true,
+                },
+                ...RepositoryHelper.applyPagination(dto),
+            }),
+            this.prismaService.articleComment.count({ where }),
+        ]);
+
+        return {
+            total,
+            items: comments,
+        };
     }
 
     async create(dto: ArticleCommentCreateDto, context: ContextDto) {

@@ -22,6 +22,7 @@ import { JwtAuthGuard } from '../../../auth/infrastructure/guards/jwt-auth.guard
 import { MappingInterceptor } from '../../../common/domain/interceptors/mapping.interceptor';
 import { ArticleCommentDetailSchema } from '../schemas/article-comment/article-comment-detail.schema';
 import { ArticleCommentSchema } from '../schemas/article-comment/article-comment.schema';
+import { ArticleCommentWithTotal } from '../schemas/article-comment/article-comment-with-total';
 
 @ApiTags('Article comment')
 @ApiBearerAuth()
@@ -30,8 +31,8 @@ import { ArticleCommentSchema } from '../schemas/article-comment/article-comment
 export class ArticleCommentController {
     constructor(private readonly articleCommentService: ArticleCommentService) {}
 
-    @ApiOkResponse({ type: ArticleCommentDetailSchema })
-    @UseInterceptors(new MappingInterceptor(ArticleCommentDetailSchema))
+    @ApiOkResponse({ type: ArticleCommentWithTotal })
+    @UseInterceptors(new MappingInterceptor(ArticleCommentWithTotal))
     @Get('/')
     async findAll(@Query() dto: ArticleCommentSearchDto) {
         return this.articleCommentService.findAll(dto);
