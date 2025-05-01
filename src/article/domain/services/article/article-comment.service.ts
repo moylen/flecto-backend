@@ -38,6 +38,9 @@ export class ArticleCommentService {
                 include: {
                     creator: true,
                 },
+                orderBy: {
+                    createTime: 'desc',
+                },
                 ...RepositoryHelper.applyPagination(dto),
             }),
             this.prismaService.articleComment.count({ where }),
