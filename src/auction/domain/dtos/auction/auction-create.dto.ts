@@ -1,7 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsDate, IsNotEmpty, IsNumber, Min, Validate } from 'class-validator';
+import { IsISO8601, IsNotEmpty, IsNumber, Min, Validate } from 'class-validator';
 import { FutureDateTimeValidator } from '../../../../common/domain/validators/future-date-time.validator';
-import { Type } from 'class-transformer';
 
 export class AuctionCreateDto {
     @ApiProperty()
@@ -22,8 +21,7 @@ export class AuctionCreateDto {
     stepPrice: number;
 
     @ApiProperty()
-    @IsDate()
-    @Type(() => Date)
+    @IsISO8601()
     @IsNotEmpty()
     @Validate(FutureDateTimeValidator, [24])
     untilTime: Date;
