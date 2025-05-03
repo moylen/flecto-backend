@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ValidationArguments, ValidatorConstraint, ValidatorConstraintInterface } from 'class-validator';
-import { addHours, isAfter, parseISO } from 'date-fns';
+import { addHours, isAfter, parseISO, subSeconds } from 'date-fns';
 
 @Injectable()
 @ValidatorConstraint({ async: true })
@@ -10,7 +10,7 @@ export class FutureDateTimeValidator implements ValidatorConstraintInterface {
 
         const inputDateTime = parseISO(value);
         const now = new Date();
-        const minDateTime = addHours(now, minHours);
+        const minDateTime = subSeconds(addHours(now, minHours), 1);
 
         return isAfter(inputDateTime, minDateTime);
     }
