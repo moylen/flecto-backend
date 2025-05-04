@@ -23,6 +23,9 @@ export class AuctionService {
             },
             include: {
                 history: {
+                    include: {
+                        user: true,
+                    },
                     orderBy: {
                         id: 'desc',
                     },

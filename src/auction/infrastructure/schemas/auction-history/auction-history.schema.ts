@@ -1,19 +1,12 @@
 import { AuctionAction } from '@prisma/client';
 import { ApiProperty } from '@nestjs/swagger';
-import { Expose } from 'class-transformer';
+import { Expose, Type } from 'class-transformer';
+import { UserSchema } from '../../../../user/infrastructure/schema/user/user.schema';
 
 export class AuctionHistorySchema {
     @ApiProperty()
     @Expose()
     id: number;
-
-    @ApiProperty()
-    @Expose()
-    auctionId: number;
-
-    @ApiProperty()
-    @Expose()
-    userId: number;
 
     @ApiProperty({ enum: AuctionAction })
     @Expose()
@@ -26,4 +19,9 @@ export class AuctionHistorySchema {
     @ApiProperty()
     @Expose()
     createTime: Date;
+
+    @ApiProperty({ type: () => UserSchema })
+    @Type(() => UserSchema)
+    @Expose()
+    user?: UserSchema;
 }
