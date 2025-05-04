@@ -25,5 +25,5 @@ export class AuctionHistorySchema {
 
     @ApiProperty()
     @Expose()
-    createTime: number;
+    createTime: Date;
 }
