@@ -1,15 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Expose } from 'class-transformer';
+import { UserShortSchema } from './user-short.schema';
 
-export class UserSchema {
-    @ApiProperty()
-    @Expose()
-    id: number;
-
-    @ApiProperty()
-    @Expose()
-    username: string;
-
+export class UserSchema extends UserShortSchema {
     @ApiProperty()
     @Expose()
     email: string;
@@ -29,10 +22,6 @@ export class UserSchema {
     @ApiProperty()
     @Expose()
     description: string;
-
-    @ApiProperty()
-    @Expose()
-    avatarId: number;
 
     @ApiProperty()
     @Expose()

@@ -6,6 +6,7 @@ import { ContextDto } from '../../../common/domain/dtos/context.dto';
 import { ChatMessageCreateDto } from '../dtos/chat-message-create.dto';
 import { ChatMessageUpdateDto } from '../dtos/chat-message-update.dto';
 import { ChatMessageDeleteDto } from '../dtos/chat-message-delete.dto';
+import { PaginationDto } from '../../../common/domain/dtos/pagination.dto';
 
 @Injectable()
 export class ChatMessageService {
@@ -28,13 +29,51 @@ export class ChatMessageService {
 
     async findAll(dto: ChatMessageSearchDto, context: ContextDto) {
         return this.prismaService.chatMessage.findMany({
+            include: {
+                sender: true,
+                receiver: true,
+            },
             where: {
-                senderId: context.user.id,
-                receiverId: dto.receiverId,
+                OR: [{ senderId: context.user.id }, { senderId: dto.receiverId }],
                 deleteTime: null,
             },
             ...RepositoryHelper.applyPagination(dto),
         });
+    }
+
+    async findRooms(dto: PaginationDto, context: ContextDto) {
+        const { take, skip } = RepositoryHelper.applyPagination(dto);
+
+        return this.prismaService.$queryRaw`
+            SELECT DISTINCT ON (
+                LEAST("senderId", "receiverId"),
+                GREATEST("senderId", "receiverId")
+                ) chat_message."id",
+                  chat_message."senderId",
+                  chat_message."receiverId",
+                  chat_message."content",
+                  chat_message."createTime",
+                  chat_message."updateTime",
+                  chat_message."deleteTime",
+                  json_build_object(
+                          'id', sender."id",
+                          'username', sender."username",
+                          'avatarId', sender."avatarId"
+                  ) AS sender,
+                  json_build_object(
+                          'id', receiver."id",
+                          'username', receiver."username",
+                          'avatarId', receiver."avatarId"
+                  ) AS receiver
+            FROM "chat_message"
+                     LEFT JOIN "user" sender ON sender.id = "senderId"
+                     LEFT JOIN "user" receiver ON receiver.id = "receiverId"
+            WHERE "senderId" = ${context.user.id} OR "receiverId" = ${context.user.id}
+            ORDER BY LEAST("senderId", "receiverId"),
+                     GREATEST("senderId", "receiverId"),
+                     chat_message."createTime" DESC
+            LIMIT ${take} OFFSET ${skip}
+        `;
     }
 
     async create(senderId: number, dto: ChatMessageCreateDto) {

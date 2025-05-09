@@ -1,18 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Expose } from 'class-transformer';
+import { Expose, Type } from 'class-transformer';
+import { UserShortSchema } from '../../../user/infrastructure/schema/user/user-short.schema';
 
 export class ChatMessageSchema {
     @ApiProperty()
     @Expose()
     id: number;
-
-    @ApiProperty()
-    @Expose()
-    senderId: number;
-
-    @ApiProperty()
-    @Expose()
-    receiverId: number;
 
     @ApiProperty()
     @Expose()
@@ -29,4 +22,14 @@ export class ChatMessageSchema {
     @ApiProperty()
     @Expose()
     deleteTime: Date;
+
+    @ApiProperty({ type: () => UserShortSchema })
+    @Type(() => UserShortSchema)
+    @Expose()
+    sender: UserShortSchema;
+
+    @ApiProperty({ type: () => UserShortSchema })
+    @Type(() => UserShortSchema)
+    @Expose()
+    receiver: UserShortSchema;
 }
