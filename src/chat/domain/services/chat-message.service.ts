@@ -7,6 +7,7 @@ import { ChatMessageCreateDto } from '../dtos/chat-message-create.dto';
 import { ChatMessageUpdateDto } from '../dtos/chat-message-update.dto';
 import { ChatMessageDeleteDto } from '../dtos/chat-message-delete.dto';
 import { PaginationDto } from '../../../common/domain/dtos/pagination.dto';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class ChatMessageService {
@@ -28,17 +29,24 @@ export class ChatMessageService {
     }
 
     async findAll(dto: ChatMessageSearchDto, context: ContextDto) {
-        return this.prismaService.chatMessage.findMany({
-            include: {
-                sender: true,
-                receiver: true,
-            },
-            where: {
-                OR: [{ senderId: context.user.id }, { senderId: dto.receiverId }],
-                deleteTime: null,
-            },
-            ...RepositoryHelper.applyPagination(dto),
-        });
+        const where: Prisma.ChatMessageWhereInput = {
+            OR: [{ senderId: context.user.id }, { senderId: dto.receiverId }],
+            deleteTime: null,
+        };
+
+        const [total, items] = await this.prismaService.$transaction([
+            this.prismaService.chatMessage.count({ where }),
+            this.prismaService.chatMessage.findMany({
+                where,
+                include: {
+                    sender: true,
+                    receiver: true,
+                },
+                ...RepositoryHelper.applyPagination(dto),
+            }),
+        ]);
+
+        return { total, items };
     }
 
     async findRooms(dto: PaginationDto, context: ContextDto) {

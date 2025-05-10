@@ -50,7 +50,9 @@ export class ChatGateway implements OnGatewayDisconnect {
     }
 
     async handleDisconnect(socket: AuthSocket) {
-        this.connectedUsers.delete(socket.context.user.id);
+        if (socket.context?.user) {
+            this.connectedUsers.delete(socket.context.user.id);
+        }
     }
 
     private emit(event: string, message: ChatMessage, userIds: number[]): void {

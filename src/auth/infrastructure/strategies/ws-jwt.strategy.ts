@@ -11,7 +11,7 @@ export class WsJwtStrategy extends PassportStrategy(Strategy, 'ws-jwt') {
             jwtFromRequest: ExtractJwt.fromExtractors([
                 (req) => {
                     const socket: Socket = req;
-                    const authHeader = socket.handshake?.headers?.authorization;
+                    const authHeader = socket.handshake?.auth?.token;
                     if (!authHeader) {
                         return null;
                     }

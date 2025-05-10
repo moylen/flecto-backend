@@ -8,6 +8,7 @@ import { JwtAuthGuard } from '../../../auth/infrastructure/guards/jwt-auth.guard
 import { ChatMessageSchema } from '../schemas/chat-message.schema';
 import { MappingInterceptor } from '../../../common/domain/interceptors/mapping.interceptor';
 import { PaginationDto } from '../../../common/domain/dtos/pagination.dto';
+import { ChatMessageWithTotalSchema } from '../schemas/chat-message-with-total.schema';
 
 @ApiTags('Chat message')
 @ApiBearerAuth()
@@ -16,8 +17,8 @@ import { PaginationDto } from '../../../common/domain/dtos/pagination.dto';
 export class ChatMessageController {
     constructor(private readonly chatMessageService: ChatMessageService) {}
 
-    @ApiOkResponse({ type: [ChatMessageSchema] })
-    @UseInterceptors(new MappingInterceptor(ChatMessageSchema))
+    @ApiOkResponse({ type: [ChatMessageWithTotalSchema] })
+    @UseInterceptors(new MappingInterceptor(ChatMessageWithTotalSchema))
     @Get('/')
     async findAll(@Query() dto: ChatMessageSearchDto, @Context() context: ContextDto) {
         return this.chatMessageService.findAll(dto, context);
