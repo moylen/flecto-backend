@@ -8,6 +8,7 @@ import { ChatMessageUpdateDto } from '../dtos/chat-message-update.dto';
 import { ChatMessageDeleteDto } from '../dtos/chat-message-delete.dto';
 import { PaginationDto } from '../../../common/domain/dtos/pagination.dto';
 import { Prisma } from '@prisma/client';
+import { ChatMessageSchema } from '../../infrastructure/schemas/chat-message.schema';
 
 @Injectable()
 export class ChatMessageService {
@@ -84,8 +85,12 @@ export class ChatMessageService {
         `;
     }
 
-    async create(senderId: number, dto: ChatMessageCreateDto) {
-        return this.prismaService.chatMessage.create({
+    async create(senderId: number, dto: ChatMessageCreateDto): Promise<ChatMessageSchema> {
+        const chatMessage = await this.prismaService.chatMessage.create({
+            include: {
+                sender: true,
+                receiver: true,
+            },
             data: {
                 sender: {
                     connect: {
@@ -100,31 +105,67 @@ export class ChatMessageService {
                 content: dto.content,
             },
         });
+
+        return {
+            ...chatMessage,
+            sender: {
+                id: chatMessage.sender.id,
+                username: chatMessage.sender.username,
+                avatarId: chatMessage.sender.avatarId,
+            },
+            receiver: {
+                id: chatMessage.receiver.id,
+                username: chatMessage.receiver.username,
+                avatarId: chatMessage.receiver.avatarId,
+            },
+        };
     }
 
-    async update(senderId: number, dto: ChatMessageUpdateDto) {
+    async update(senderId: number, dto: ChatMessageUpdateDto): Promise<ChatMessageSchema> {
         const message = await this.findByIdOrPanic(dto.id);
 
         if (message.senderId !== senderId) {
             throw new ForbiddenException('Access denied');
         }
 
-        return this.prismaService.chatMessage.update({
+        const chatMessage = await this.prismaService.chatMessage.update({
+            include: {
+                sender: true,
+                receiver: true,
+            },
             where: {
                 id: dto.id,
             },
             data: dto,
         });
+
+        return {
+            ...chatMessage,
+            sender: {
+                id: chatMessage.sender.id,
+                username: chatMessage.sender.username,
+                avatarId: chatMessage.sender.avatarId,
+            },
+            receiver: {
+                id: chatMessage.receiver.id,
+                username: chatMessage.receiver.username,
+                avatarId: chatMessage.receiver.avatarId,
+            },
+        };
     }
 
-    async softDelete(senderId: number, dto: ChatMessageDeleteDto) {
+    async softDelete(senderId: number, dto: ChatMessageDeleteDto): Promise<ChatMessageSchema> {
         const message = await this.findByIdOrPanic(dto.id);
 
         if (message.senderId !== senderId) {
             throw new ForbiddenException('Access denied');
         }
 
-        return this.prismaService.chatMessage.update({
+        const chatMessage = await this.prismaService.chatMessage.update({
+            include: {
+                sender: true,
+                receiver: true,
+            },
             where: {
                 id: dto.id,
             },
@@ -132,5 +173,19 @@ export class ChatMessageService {
                 deleteTime: new Date(),
             },
         });
+
+        return {
+            ...chatMessage,
+            sender: {
+                id: chatMessage.sender.id,
+                username: chatMessage.sender.username,
+                avatarId: chatMessage.sender.avatarId,
+            },
+            receiver: {
+                id: chatMessage.receiver.id,
+                username: chatMessage.receiver.username,
+                avatarId: chatMessage.receiver.avatarId,
+            },
+        };
     }
 }

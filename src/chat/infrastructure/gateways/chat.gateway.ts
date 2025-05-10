@@ -14,7 +14,7 @@ import { Server } from 'socket.io';
 import { ChatMessageCreateDto } from '../../domain/dtos/chat-message-create.dto';
 import { ChatMessageUpdateDto } from '../../domain/dtos/chat-message-update.dto';
 import { ChatMessageDeleteDto } from '../../domain/dtos/chat-message-delete.dto';
-import { ChatMessage } from '@prisma/client';
+import { ChatMessageSchema } from '../schemas/chat-message.schema';
 
 @UseGuards(WsJwtAuthGuard)
 @WebSocketGateway({ namespace: '/chat', transports: ['websocket'] })
@@ -55,7 +55,7 @@ export class ChatGateway implements OnGatewayDisconnect {
         }
     }
 
-    private emit(event: string, message: ChatMessage, userIds: number[]): void {
+    private emit(event: string, message: ChatMessageSchema, userIds: number[]): void {
         const socketIds = userIds.map((userId) => this.connectedUsers.get(userId)).filter(Boolean);
         this.server.to(socketIds).emit(event, message);
     }
