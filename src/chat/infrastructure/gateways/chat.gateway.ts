@@ -17,7 +17,7 @@ import { ChatMessageDeleteDto } from '../../domain/dtos/chat-message-delete.dto'
 import { ChatMessageSchema } from '../schemas/chat-message.schema';
 
 @UseGuards(WsJwtAuthGuard)
-@WebSocketGateway({ namespace: '/chat', transports: ['websocket'] })
+@WebSocketGateway({ namespace: '/ws/chat', transports: ['websocket'] })
 export class ChatGateway implements OnGatewayDisconnect {
     constructor(private readonly chatMessageService: ChatMessageService) {}
 
