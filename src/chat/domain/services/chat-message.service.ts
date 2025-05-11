@@ -57,7 +57,8 @@ export class ChatMessageService {
         const { take, skip } = RepositoryHelper.applyPagination(dto);
 
         return this.prismaService.$queryRaw`
-            SELECT DISTINCT ON (
+            SELECT *
+            FROM (SELECT DISTINCT ON (
                 LEAST("senderId", "receiverId"),
                 GREATEST("senderId", "receiverId")
                 ) chat_message."id",
@@ -68,22 +69,24 @@ export class ChatMessageService {
                   chat_message."updateTime",
                   chat_message."deleteTime",
                   json_build_object(
-                          'id', sender."id",
-                          'username', sender."username",
-                          'avatarId', sender."avatarId"
+                      'id', sender."id",
+                      'username', sender."username",
+                      'avatarId', sender."avatarId"
                   ) AS sender,
                   json_build_object(
-                          'id', receiver."id",
-                          'username', receiver."username",
-                          'avatarId', receiver."avatarId"
+                      'id', receiver."id",
+                      'username', receiver."username",
+                      'avatarId', receiver."avatarId"
                   ) AS receiver
-            FROM "chat_message"
-                     LEFT JOIN "user" sender ON sender.id = "senderId"
-                     LEFT JOIN "user" receiver ON receiver.id = "receiverId"
-            WHERE "senderId" = ${context.user.id} OR "receiverId" = ${context.user.id}
-            ORDER BY LEAST("senderId", "receiverId"),
-                     GREATEST("senderId", "receiverId"),
-                     chat_message."createTime" DESC
+                  FROM "chat_message"
+                           LEFT JOIN "user" sender ON sender.id = "senderId"
+                           LEFT JOIN "user" receiver ON receiver.id = "receiverId"
+                  WHERE "senderId" = ${context.user.id}
+                     OR "receiverId" = ${context.user.id}
+                  ORDER BY LEAST("senderId", "receiverId"),
+                           GREATEST("senderId", "receiverId"),
+                           chat_message."createTime" DESC) as latest_messages
+            ORDER BY "createTime" DESC
             LIMIT ${take} OFFSET ${skip}
         `;
     }
