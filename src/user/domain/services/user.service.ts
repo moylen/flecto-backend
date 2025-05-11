@@ -30,6 +30,18 @@ export class UserService {
         });
     }
 
+    async search(dto: UserSearchDto) {
+        return this.prismaService.user.findMany({
+            where: {
+                username: {
+                    contains: dto.username,
+                    mode: 'insensitive',
+                },
+            },
+            ...RepositoryHelper.applyPagination(dto),
+        });
+    }
+
     async findByUsername(username: string) {
         return this.prismaService.user.findUnique({
             where: {

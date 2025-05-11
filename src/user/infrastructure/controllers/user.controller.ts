@@ -24,6 +24,7 @@ import { UserUsernameUpdateDto } from '../../domain/dtos/user/user-username-upda
 import { UserSearchDto } from '../../domain/dtos/user/user-search.dto';
 import { UserEmailUpdateDto } from '../../domain/dtos/user/user-email-update.dto';
 import { UserConfirmEmailDto } from '../../domain/dtos/user/user-confirm-email.dto';
+import { UserShortSchema } from '../schema/user/user-short.schema';
 
 @ApiTags('User')
 @ApiBearerAuth()
@@ -44,6 +45,13 @@ export class UserController {
     @Get('/me')
     async findMe(@Context() context: ContextDto) {
         return this.userService.findMeOrPanic(context);
+    }
+
+    @ApiOkResponse({ type: UserShortSchema })
+    @UseInterceptors(new MappingInterceptor(UserShortSchema))
+    @Get('/search')
+    async search(@Query() dto: UserSearchDto) {
+        return this.userService.search(dto);
     }
 
     @ApiOkResponse({ type: UserDetailSchema })
