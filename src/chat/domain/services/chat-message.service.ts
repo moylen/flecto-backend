@@ -46,6 +46,9 @@ export class ChatMessageService {
                     sender: true,
                     receiver: true,
                 },
+                orderBy: {
+                    createTime: 'desc',
+                },
                 ...RepositoryHelper.applyPagination(dto),
             }),
         ]);
