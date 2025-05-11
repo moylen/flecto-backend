@@ -31,7 +31,10 @@ export class ChatMessageService {
 
     async findAll(dto: ChatMessageSearchDto, context: ContextDto) {
         const where: Prisma.ChatMessageWhereInput = {
-            OR: [{ senderId: context.user.id }, { senderId: dto.receiverId }],
+            OR: [
+                { senderId: context.user.id, receiverId: dto.receiverId },
+                { senderId: dto.receiverId, receiverId: context.user.id },
+            ],
             deleteTime: null,
         };
 
