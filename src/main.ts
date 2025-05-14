@@ -35,7 +35,12 @@ async function bootstrap() {
     app.setGlobalPrefix('api');
     app.useGlobalPipes(new ValidationPipe({ transform: true, whitelist: true }));
     await app.register(fastifyCookie);
-    await app.register(fastifyMultipart);
+    await app.register(fastifyMultipart, {
+        limits: {
+            fileSize: 5 * 1024 * 1024,
+            files: 10,
+        },
+    });
     useContainer(app.select(AppModule), { fallbackOnErrors: true });
 
     // Run
